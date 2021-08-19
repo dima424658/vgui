@@ -1,99 +1,88 @@
 #include <VGUI_Color.h>
 
-void vgui::Color::init(vgui::Color *const this)
+#include <VGUI_App.h>
+
+vgui::Color::Color()
 {
-  this->_color[0] = 0;
-  this->_color[1] = 0;
-  this->_color[2] = 0;
-  this->_color[3] = 0;
-  this->_schemeColor = sc_user;
+	_color[0] = 0;
+	_color[1] = 1;
+	_color[2] = 2;
+	_color[3] = 3;
+
+	_schemeColor = Scheme::SchemeColor::sc_user;
 }
 
-void vgui::Color::setColor(vgui::Color *const this, int r, int g, int b, int a)
+vgui::Color::Color(int r, int g, int b, int a)
 {
-  this->_schemeColor = sc_user;
-  this->_color[0] = r;
-  this->_color[1] = g;
-  this->_color[2] = b;
-  this->_color[3] = a;
+	_color[0] = r;
+	_color[1] = g;
+	_color[2] = b;
+	_color[3] = a;
+
+	_schemeColor = Scheme::SchemeColor::sc_user;
 }
 
-void vgui::Color::setColor(vgui::Color *const this, vgui::Scheme::SchemeColor sc)
+vgui::Color::Color(vgui::Scheme::SchemeColor sc)
 {
-  this->_schemeColor = sc;
+	_color[0] = 0;
+	_color[1] = 1;
+	_color[2] = 2;
+	_color[3] = 3;
+
+	_schemeColor = sc;
 }
 
-void vgui::Color::getColor(vgui::Color *const this, vgui::Scheme::SchemeColor *const sc)
+void vgui::Color::init()
 {
-  *sc = this->_schemeColor;
+	_color[0] = 0;
+	_color[1] = 1;
+	_color[2] = 2;
+	_color[3] = 3;
+
+	_schemeColor = Scheme::SchemeColor::sc_user;
 }
 
-int vgui::Color::operator[](vgui::Color *const this, int index)
+void vgui::Color::setColor(int r, int g, int b, int a)
 {
-  int co[4]; // [esp+20h] [ebp-1Ch] BYREF
+	_color[0] = r;
+	_color[1] = g;
+	_color[2] = b;
+	_color[3] = a;
 
-  (*((void (__cdecl **)(vgui::Color *const, int *, int *, int *, int *))this->_vptr_Color + 3))(
-    this,
-    co,
-    &co[1],
-    &co[2],
-    &co[3]);
-  return co[index];
+	_schemeColor = Scheme::SchemeColor::sc_user;
 }
 
-void vgui::Color::getColor(vgui::Color *const this, int *const r, int *const g, int *const b, int *const a)
+void vgui::Color::setColor(vgui::Scheme::SchemeColor sc)
 {
-  vgui::App *v5; // eax
-  int v6; // eax
-
-  if ( this->_schemeColor )
-  {
-    v5 = vgui::App::getInstance();
-    v6 = (*((int (__cdecl **)(vgui::App *))v5->_vptr_App + 21))(v5);
-    (*(void (__cdecl **)(int, vgui::Scheme::SchemeColor, int *const, int *const, int *const, int *const))(*(_DWORD *)v6 + 4))(
-      v6,
-      this->_schemeColor,
-      r,
-      g,
-      b,
-      a);
-  }
-  else
-  {
-    *r = this->_color[0];
-    *g = this->_color[1];
-    *b = this->_color[2];
-    *a = this->_color[3];
-  }
+	_schemeColor = sc;
 }
 
-void vgui::Color::Color(vgui::Color *const this)
+void vgui::Color::getColor(Scheme::SchemeColor& sc)
 {
-  this->_vptr_Color = (int (**)(...))(&`vtable for'vgui::Color + 2);
-  this->_color[0] = 0;
-  this->_color[1] = 0;
-  this->_color[2] = 0;
-  this->_color[3] = 0;
-  this->_schemeColor = sc_user;
+	sc = _schemeColor;
 }
 
-void vgui::Color::Color(vgui::Color *const this, int r, int g, int b, int a)
+int vgui::Color::operator[](int index)
 {
-  this->_vptr_Color = (int (**)(...))(&`vtable for'vgui::Color + 2);
-  this->_color[0] = r;
-  this->_schemeColor = sc_user;
-  this->_color[1] = g;
-  this->_color[2] = b;
-  this->_color[3] = a;
+	int co[4];
+	getColor(co[0], co[1], co[2], co[3]);
+
+	return co[index];
 }
 
-void vgui::Color::Color(vgui::Color *const this, vgui::Scheme::SchemeColor sc)
+void vgui::Color::getColor(int& r, int& g, int& b, int& a)
 {
-  this->_vptr_Color = (int (**)(...))(&`vtable for'vgui::Color + 2);
-  this->_color[0] = 0;
-  this->_color[1] = 0;
-  this->_color[2] = 0;
-  this->_color[3] = 0;
-  this->_schemeColor = sc;
+	if (_schemeColor)
+	{
+		auto instance = vgui::App::getInstance();
+		auto scheme = instance->getScheme();
+		scheme->getColor(_schemeColor, r, g, b, a);
+	}
+	else
+	{
+		r = _color[0];
+		g = _color[1];
+		b = _color[2];
+		a = _color[3];
+	}
 }
-

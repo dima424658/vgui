@@ -1,3 +1,8 @@
+# Visual Studio
+.vs
+vgui.sln
+vgui.vcxproj*
+
 # Prerequisites
 *.d
 

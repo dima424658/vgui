@@ -1,18 +1,16 @@
 #include <VGUI_MenuItem.h>
 
-void vgui::MenuItem::MenuItem(vgui::MenuItem *const this, const char *text)
+vgui::MenuItem::MenuItem(const char *text)
+	: vgui::Button(text, 0, 0),
+	_subMenu{nullptr}
 {
-  vgui::Button::Button(this, text, 0, 0);
-  *(_DWORD *)this->baseclass_0 = &`vtable for'vgui::MenuItem + 2;
-  vgui::Button::setButtonBorderEnabled(this, 0);
-  this->_subMenu = 0;
+setButtonBorderEnabled(false);
 }
 
-void vgui::MenuItem::MenuItem(vgui::MenuItem *const this, const char *text, vgui::Menu *subMenu)
+vgui::MenuItem::MenuItem(const char *text, vgui::Menu *subMenu)
+	: vgui::Button(text, 0, 0),
+	_subMenu{ subMenu }
 {
-  vgui::Button::Button(this, text, 0, 0);
-  *(_DWORD *)this->baseclass_0 = &`vtable for'vgui::MenuItem + 2;
-  vgui::Button::setButtonBorderEnabled(this, 0);
-  this->_subMenu = subMenu;
+	setButtonBorderEnabled(false);
 }
 
