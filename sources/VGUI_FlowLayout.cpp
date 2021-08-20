@@ -13,7 +13,7 @@ void vgui::FlowLayout::performLayout(vgui::Panel* panel)
 	int x;
 	int y;
 	int wide;
-	int tall[7];
+	int tall;
 
 	v3 = 0;
 	

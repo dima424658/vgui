@@ -1,51 +1,41 @@
 #include <VGUI_CheckButton.h>
 
-void vgui::CheckButton::paintBackground(vgui::CheckButton *const this)
+vgui::CheckButton::CheckButton(const char* text, int x, int y)
+  : vgui::ToggleButton{ text, x, y }
 {
-  int wide; // [esp+28h] [ebp-14h] BYREF
-  int tall[4]; // [esp+2Ch] [ebp-10h] BYREF
+  int wide, tall;
 
-  (*(void (__cdecl **)(vgui::CheckButton *const, int *, int *))(*(_DWORD *)this->baseclass_0 + 232))(this, &wide, tall);
-  (*(void (__cdecl **)(vgui::CheckButton *const, int))(*(_DWORD *)this->baseclass_0 + 372))(this, 8);
-  (*(void (__cdecl **)(vgui::CheckButton *const, _DWORD, _DWORD, int, int))(*(_DWORD *)this->baseclass_0 + 380))(
-    this,
-    0,
-    0,
-    wide,
-    tall[0]);
+  setTextAlignment(vgui::Label::Alignment::a_east);
+
+  auto image = new vgui::Image;
+  image->setPos(x, y); // ??? возможно другие аргументы
+  image->setSize(20, 20);
+
+  setImage(image);
+  getContentSize(wide, tall);
+  setSize(wide, tall);
 }
 
-void vgui::CheckButton::CheckButton(vgui::CheckButton *const this, const char *text, int x, int y, int wide, int tall)
+vgui::CheckButton::CheckButton(const char* text, int x, int y, int wide, int tall)
+  : vgui::ToggleButton{ text, x, y, wide, tall }
 {
-  vgui::Image *v6; // esi
+  vgui::Image* v6; // esi
 
-  vgui::ToggleButton::ToggleButton(this, text, x, y, wide, tall);
-  *(_DWORD *)this->baseclass_0 = &`vtable for'vgui::CheckButton + 2;
-  vgui::Label::setTextAlignment(this, a_east_0);
-  v6 = (vgui::Image *)operator new(0x28u);
-  vgui::Image::Image(v6);
-  v6[1]._vptr_Image = (int (**)(...))this;
-  v6->_vptr_Image = (int (**)(...))&off_42FE8;
-  vgui::Image::setSize(v6, 20, 20);
-  vgui::Label::setImage(this, v6);
+  setTextAlignment(vgui::Label::Alignment::a_east);
+
+  auto image = new vgui::Image;
+  image->setPos(x, y); // ??? возможно другие аргументы
+  image->setSize(20, 20);
+
+  setImage(image);
 }
 
-void vgui::CheckButton::CheckButton(vgui::CheckButton *const this, const char *text, int x, int y)
+void vgui::CheckButton::paintBackground()
 {
-  vgui::Image *v4; // esi
-  int wide; // [esp+18h] [ebp-14h] BYREF
-  int tall[4]; // [esp+1Ch] [ebp-10h] BYREF
+  int wide, tall;
 
-  vgui::ToggleButton::ToggleButton(this, text, x, y);
-  *(_DWORD *)this->baseclass_0 = &`vtable for'vgui::CheckButton + 2;
-  vgui::Label::setTextAlignment(this, a_east_0);
-  v4 = (vgui::Image *)operator new(0x28u);
-  vgui::Image::Image(v4);
-  v4[1]._vptr_Image = (int (**)(...))this;
-  v4->_vptr_Image = (int (**)(...))&off_42FE8;
-  vgui::Image::setSize(v4, 20, 20);
-  vgui::Label::setImage(this, v4);
-  vgui::Label::getContentSize(this, &wide, tall);
-  vgui::Panel::setSize((vgui::Panel *const)this, wide, tall[0]);
+  getPaintSize(wide, tall);
+  drawSetColor(vgui::Scheme::SchemeColor::sc_secondary3);
+  drawFilledRect(0, 0, wide, tall);
 }
 

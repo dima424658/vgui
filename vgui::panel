@@ -1,0 +1,6 @@
+>_vptr_Panel + 3 = getSize(wide, tall);
+>_vptr_Panel + 43 = getChildCount();
+>_vptr_Panel + 44 = getChild();
+>_vptr_Panel + 61 = getSurfaceBase();
+surfaceBase + 60(DWORD) = createNewTextureID();
+>_vptr_Panel + 232(DWORD) = getPaintSize
