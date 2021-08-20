@@ -2,17 +2,7 @@
 
 #include <VGUI_InputSignal.h>
 #include <VGUI_DesktopIcon.h>
-
-namespace vgui
-{
-    enum MouseCode
-    {
-        MOUSE_LEFT,
-        MOUSE_RIGHT = 1,
-        MOUSE_MIDDLE = 2,
-        MOUSE_LAST = 3
-    };
-};
+#include <VGUI_MouseCode.h>
 
 namespace detail
 {
