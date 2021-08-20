@@ -1882,44 +1882,7 @@ vgui::Panel *__cdecl vgui::Desktop::getForeground(vgui::Desktop *const this)
 // 434A0: using guessed type int `vtable for'vgui::Desktop;
 
 //----- (00027BC0) --------------------------------------------------------
-void __cdecl `anonymous namespace'::FooHandler::mousePressed(`anonymous namespace'::FooHandler *const this, vgui::MouseCode code, vgui::Panel *panel)
-{
-  int v4; // eax
-  int v5; // eax
-  int v6; // eax
-  int x; // [esp+18h] [ebp-14h] BYREF
-  int y[4]; // [esp+1Ch] [ebp-10h] BYREF
 
-  v4 = (*((int (__cdecl **)(vgui::Panel *))panel->_vptr_Panel + 83))(panel);
-  (*(void (__cdecl **)(int, int *, int *))(*(_DWORD *)v4 + 52))(v4, &x, y);
-  v5 = x;
-  this->_dragging = 1;
-  this->_dragStart[0] = v5;
-  this->_dragStart[1] = y[0];
-  (*((void (__cdecl **)(vgui::DesktopIcon *, int *, int *))this->_desktopIcon->_vptr_Panel + 1))(
-    this->_desktopIcon,
-    this->_dragOrgPos,
-    &this->_dragOrgPos[1]);
-  v6 = (*((int (__cdecl **)(vgui::Panel *))panel->_vptr_Panel + 83))(panel);
-  (*(void (__cdecl **)(int, vgui::Panel *))(*(_DWORD *)v6 + 56))(v6, panel);
-  (*((void (__cdecl **)(vgui::DesktopIcon *))this->_desktopIcon->_vptr_Panel + 41))(this->_desktopIcon);
-}
-
-//----- (00027C50) --------------------------------------------------------
-void __cdecl `anonymous namespace'::FooHandler::mouseDoublePressed(`anonymous namespace'::FooHandler *const this, vgui::MouseCode code, vgui::Panel *panel)
-{
-  (*((void (__cdecl **)(vgui::DesktopIcon *))this->_desktopIcon->_vptr_Panel + 127))(this->_desktopIcon);
-}
-
-//----- (00027C70) --------------------------------------------------------
-void __cdecl `anonymous namespace'::FooHandler::mouseReleased(`anonymous namespace'::FooHandler *const this, vgui::MouseCode code, vgui::Panel *panel)
-{
-  int v3; // eax
-
-  this->_dragging = 0;
-  v3 = (*((int (__cdecl **)(vgui::Panel *))panel->_vptr_Panel + 83))(panel);
-  (*(void (__cdecl **)(int, _DWORD))(*(_DWORD *)v3 + 56))(v3, 0);
-}
 
 //----- (00027CF0) --------------------------------------------------------
 
@@ -1928,34 +1891,10 @@ void __cdecl `anonymous namespace'::FooHandler::mouseReleased(`anonymous namespa
 //----- (00027D30) --------------------------------------------------------
 
 //----- (00027D80) --------------------------------------------------------
-vgui::MiniApp *__cdecl vgui::DesktopIcon::getMiniApp(vgui::DesktopIcon *const this)
-{
-  return this->_miniApp;
-}
 
 //----- (00027D90) --------------------------------------------------------
 
 //----- (00027F30) --------------------------------------------------------
-void __cdecl `anonymous namespace'::FooHandler::cursorMoved(`anonymous namespace'::FooHandler *const this, int x, int y, vgui::Panel *panel)
-{
-  int v4; // eax
-  int v5; // eax
-
-  if ( this->_dragging )
-  {
-    v4 = (*((int (__cdecl **)(vgui::Panel *))panel->_vptr_Panel + 83))(panel);
-    (*(void (__cdecl **)(int, int *, int *))(*(_DWORD *)v4 + 52))(v4, &x, &y);
-    (*this->_desktopIcon->_vptr_Panel)(
-      this->_desktopIcon,
-      this->_dragOrgPos[0] + x - this->_dragStart[0],
-      this->_dragOrgPos[1] + y - this->_dragStart[1]);
-    if ( (*((int (__cdecl **)(vgui::DesktopIcon *))this->_desktopIcon->_vptr_Panel + 8))(this->_desktopIcon) )
-    {
-      v5 = (*((int (__cdecl **)(vgui::DesktopIcon *))this->_desktopIcon->_vptr_Panel + 8))(this->_desktopIcon);
-      (*(void (__cdecl **)(int))(*(_DWORD *)v5 + 48))(v5);
-    }
-  }
-}
 
 //----- (00027FC0) --------------------------------------------------------
 // 436E0: using guessed type int `vtable for'vgui::DesktopIcon;
