@@ -1,10 +1,10 @@
 #include <VGUI_TreeFolder.h>
 
 #include <VGUI_Label.h>
-#include <VGUI_InputSignal.h>
 #include <VGUI_Layout.h>
 
-#include <cmath>
+#include "handlers/FooTreeFolderDefaultHandler.h"
+#include "handlers/FooTabFolderVerticalLayout.h"
 
 bool vgui::TreeFolder::isOpened()
 {
@@ -97,80 +97,15 @@ void vgui::TreeFolder::setOpened(bool state)
   }
 }
 
-class FooTreeFolderDefaultHandler : public vgui::InputSignal
-{
-public:
-  FooTreeFolderDefaultHandler(vgui::TreeFolder* treeFolder) : _treeFolder{ treeFolder } {}
-
-  virtual void cursorMoved(int x, int y, vgui::Panel* panel) {}
-  virtual void cursorEntered(vgui::Panel* panel) {}
-  virtual void cursorExited(vgui::Panel* panel) {}
-  virtual void mousePressed(vgui::MouseCode code, vgui::Panel* panel)
-  {
-    _treeFolder->setOpened(!_treeFolder->isOpened());
-  }
-  virtual void mouseDoublePressed(vgui::MouseCode code, vgui::Panel* panel) {}
-  virtual void mouseReleased(vgui::MouseCode code, vgui::Panel* panel) {}
-  virtual void mouseWheeled(int delta, vgui::Panel* panel) {}
-  virtual void keyPressed(vgui::KeyCode code, vgui::Panel* panel) {}
-  virtual void keyTyped(vgui::KeyCode code, vgui::Panel* panel) {}
-  virtual void keyReleased(vgui::KeyCode code, vgui::Panel* panel) {}
-  virtual void keyFocusTicked(vgui::Panel* panel) {}
-
-protected:
-  vgui::TreeFolder* _treeFolder;
-};
-
-class FooTabFolderVerticalLayout : public vgui::Layout
-{
-private:
-  int _hgap, _vgap;
-public:
-  FooTabFolderVerticalLayout(int hgap, int vgap) : _hgap{ hgap }, _vgap{ vgap } {}
-
-  virtual void performLayout(vgui::Panel* panel)
-  {
-    int maxx = 0;
-    int wide, tall;
-    int y = 0;
-
-    for (auto i = 0; i < panel->getChildCount(); ++i)
-    {
-      auto child = panel->getChild(i);
-      auto tchild = dynamic_cast<vgui::TreeFolder*>(child);
-      if (tchild)
-        tchild->invalidateLayout(true);
-
-      child->getSize(wide, tall);
-      child->setPos(i ? _hgap : 0, y);
-
-      maxx = std::max(maxx, wide + (i ? _hgap : 0));
-      y += tall + _vgap;
-    }
-
-    auto tree_panel = dynamic_cast<vgui::TreeFolder*>(panel);
-    if (tree_panel)
-    {
-      if (tree_panel->isOpened())
-        tree_panel->setSize(maxx + 2, y);
-      else if (tree_panel->getChild(0))
-      {
-        tree_panel->getChild(0)->getSize(wide, tall);
-        tree_panel->setSize(wide, tall);
-      }
-    }
-  }
-};
-
 void vgui::TreeFolder::init(const char* name)
 {
   _opened = false;
 
   auto label = new vgui::Label{ name, 0, 0 };
-  label->addInputSignal(new FooTreeFolderDefaultHandler{ this });
+  label->addInputSignal(new handlers::FooTreeFolderDefaultHandler{ this });
   label->setParent(this);
 
-  setLayout(new FooTabFolderVerticalLayout{ 54, 0 }); // ???
+  setLayout(new handlers::FooTabFolderVerticalLayout{ 54, 0 }); // ???
 }
 
 vgui::TreeFolder::TreeFolder(const char* name)

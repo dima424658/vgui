@@ -158,6 +158,11 @@ void vgui::App::setScheme(vgui::Scheme *scheme)
   }
 }
 
+vgui::Scheme* vgui::App::getScheme()
+{
+  return _scheme;
+}
+
 void vgui::App::enableBuildMode()
 {
   _wantedBuildMode = 1;

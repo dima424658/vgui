@@ -9,24 +9,15 @@ vgui::FlowLayout::FlowLayout(int hgap)
 
 void vgui::FlowLayout::performLayout(vgui::Panel* panel)
 {
-	int v3;
-	int x;
-	int y;
-	int wide;
-	int tall;
+	int x, y;
+	int wide, tall;
+	int offset = 0;
 
-	v3 = 0;
-	
 	for (auto i = 0; i < panel->getChildCount(); ++i)
 	{
 		auto child = panel->getChild(i);
-
-		// StackLayout.cpp
-
-		child->getBounds(x, y, wide, tall); // ???
-
-		(**(void(__cdecl***)(int, int, int))v5)(v5, v3, y);
-		v3 += wide + _hgap;
+		child->getBounds(x, y, wide, tall);
+		child->setSize(offset, y);
+		offset += wide + _hgap;
 	}
-
 }

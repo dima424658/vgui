@@ -4,6 +4,8 @@
 #include <VGUI_Button.h>
 #include <VGUI_App.h>
 
+#include "handlers/FooBackNextHandler.h"
+
 void vgui::WizardPanel::WizardPage::init()
 {
   _backWizardPage = nullptr;
@@ -359,34 +361,6 @@ vgui::WizardPanel::WizardPage::WizardPage(int wide, int tall)
   init();
 }
 
-class FooBackHandler : public vgui::ActionSignal
-{
-public:
-  FooBackHandler(vgui::WizardPanel* wizardPanel) : _wizardPanel{wizardPanel} {}
-
-  virtual void actionPerformed(vgui::Panel* panel)
-  {
-    _wizardPanel->doBack();
-  }
-
-protected:
-  vgui::WizardPanel* _wizardPanel;
-};
-
-class FooNextHandler : public vgui::ActionSignal
-{
-public:
-  FooNextHandler(vgui::WizardPanel* wizardPanel) : _wizardPanel{wizardPanel} {}
-
-  virtual void actionPerformed(vgui::Panel* panel)
-  {
-    _wizardPanel->doNext();
-  }
-  
-protected:
-  vgui::WizardPanel* _wizardPanel;
-};
-
 vgui::WizardPanel::WizardPanel(int x, int y, int wide, int tall)
   : vgui::Panel{ x, y, wide, tall }
 {
@@ -394,11 +368,11 @@ vgui::WizardPanel::WizardPanel(int x, int y, int wide, int tall)
 
   _backButton = new vgui::Button{ "back", 20, 100 };
   _backButton->setParent(this);
-  _backButton->addActionSignal(new FooBackHandler(this));
+  _backButton->addActionSignal(new handlers::FooBackHandler(this));
 
   _nextButton = new vgui::Button{ "next", 80, 100 };
   _nextButton->setParent(this);
-  _nextButton->addActionSignal(new FooNextHandler(this));
+  _nextButton->addActionSignal(new handlers::FooNextHandler(this));
 
   _finishedButton = new vgui::Button{ "finished", 120, 100 };
   _finishedButton->setParent(this);

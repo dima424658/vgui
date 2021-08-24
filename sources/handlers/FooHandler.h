@@ -4,7 +4,7 @@
 #include <VGUI_DesktopIcon.h>
 #include <VGUI_MouseCode.h>
 
-namespace detail
+namespace handlers
 {
     class FooHandler : public vgui::InputSignal
     {
@@ -27,4 +27,4 @@ namespace detail
         int _dragOrgPos[2];
         vgui::DesktopIcon *_desktopIcon;
     };
-}
+};
