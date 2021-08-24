@@ -28,123 +28,72 @@ void vgui::TreeFolder::paintBackground()
   int tall, wide;
   int y_0, x_0;
 
-  v1 = 10;
-  v2 = 1;
-  (*((void(__cdecl**)(vgui::TreeFolder* const, int))_vptr_Panel + 93))(this, 1);
+  auto y_1 = 10;
 
+  drawSetColor(vgui::Scheme::SchemeColor::sc_black);
 
-  while (1)
+  for (auto i = 0; i < getChildCount(); ++i)
   {
-    v4 = v2 < (*((int(__cdecl**)(vgui::TreeFolder* const))_vptr_Panel + 43))(this);
-    v5 = _vptr_Panel;
-    if (!v4)
-      break;
-    v6 = (const void*)v5[44](this, v2);
-    (*(void(__cdecl**)(const void*, int*, int*, int*, int*))(*(_DWORD*)v6 + 20))(v6, &y_0, tall, x_0, wide);
-    if (_dynamic_cast(
-      v6,
-      (const struct __class_type_info*)&`typeinfo for'vgui::Panel,
-      (const struct __class_type_info*)&`typeinfo for'vgui::TreeFolder,
-      0))
+    auto child = getChild(i);
+    child->getBounds(x_0, y_0, wide, tall);
+
+    auto folder = dynamic_cast<vgui::TreeFolder*>(child);
+    int v3;
+    if (folder)
     {
-      v3 = tall[0] + 10;
-      tall[0] += 10;
+      v3 = y_0 + 10;
+      y_0 += 10;
     }
     else
     {
-      v3 = tall[0] + wide[0] / 2;
-      tall[0] = v3;
+      v3 = y_0 + tall / 2;
+      y_0 = v3; 
     }
-    ++v2;
-    (*((void(__cdecl**)(vgui::TreeFolder* const, int, int, int, int))_vptr_Panel + 95))(
-      this,
-      15,
-      v3,
-      30,
-      v3 + 1);
-    v1 = tall[0];
+
+    y_1 = y_0;
+    drawFilledRect(15, v3, 30, v3 + 1);
   }
-  v7 = 1;
-  v5[95](this, 15, 10, 16, v1);
-  if ((*((int(__cdecl**)(vgui::TreeFolder* const))_vptr_Panel + 43))(this) > 1)
+
+  drawFilledRect(15, 10, 16, y_1);
+  for (auto i = 0; i < getChildCount(); ++i)
   {
-    do
+    auto child = getChild(i);
+    child->getBounds(x_0, y_0, wide, tall);
+
+    auto folder = dynamic_cast<vgui::TreeFolder*>(child);
+    if (folder)
     {
-      v8 = (const void*)(*((int(__cdecl**)(vgui::TreeFolder* const, int))_vptr_Panel + 44))(this, v7);
-      (*(void(__cdecl**)(const void*, int*, int*, int*, int*))(*(_DWORD*)v8 + 20))(v8, x_0, &y_0, wide, tall);
-      v9 = _dynamic_cast(
-        v8,
-        (const struct __class_type_info*)&`typeinfo for'vgui::Panel,
-        (const struct __class_type_info*)&`typeinfo for'vgui::TreeFolder,
-        0);
-      if (v9
-        && (v10 = _vptr_Panel,
-          y_0 += 10,
-          v10[93](this, 2),
-          (*((void(__cdecl**)(vgui::TreeFolder* const, int, int, int, int))_vptr_Panel + 95))(
-            this,
-            10,
-            y_0 - 5,
-            21,
-            y_0 + 6),
-          (*((void(__cdecl**)(vgui::TreeFolder* const, int))_vptr_Panel + 93))(this, 1),
-          (*((void(__cdecl**)(vgui::TreeFolder* const, int, int, int, int))_vptr_Panel + 96))(
-            this,
-            10,
-            y_0 - 5,
-            21,
-            y_0 + 6),
-          (*((void(__cdecl**)(vgui::TreeFolder* const, int, int, int, int))_vptr_Panel + 95))(
-            this,
-            12,
-            y_0,
-            19,
-            y_0 + 1),
-          !(*(uint8_t(__cdecl**)(void*))(*(_DWORD*)v9 + 520))(v9)))
-      {
-        ++v7;
-        (*((void(__cdecl**)(vgui::TreeFolder* const, int, int, int, int))_vptr_Panel + 95))(
-          this,
-          15,
-          y_0 - 3,
-          16,
-          y_0 + 4);
-      }
-      else
-      {
-        ++v7;
-      }
-    } while (v7 < (*((int(__cdecl**)(vgui::TreeFolder* const))_vptr_Panel + 43))(this));
+      y_0 += 10;
+      drawSetColor(vgui::Scheme::SchemeColor::sc_white);
+      drawFilledRect(10, y_0 - 5, 21, y_0 + 6);
+      drawOutlinedRect(10, y_0 - 5, 21, y_0 + 6);
+      drawFilledRect(12, y_0, 19, y_0 + 1);
+
+      if (!folder->isOpened())
+        drawFilledRect(15, y_0 - 3, 16, y_0 + 4);
+    }
   }
 }
 
 void vgui::TreeFolder::setOpened(bool state)
 {
-  vgui::TreeFolder* lpsrc; // ebx
-  void* v3; // esi
-  void* v4; // eax
+  vgui::Panel* lpsrc = this;
 
-  lpsrc = this;
   if (_opened != state)
   {
     _opened = state;
-    v3 = 0;
-    do
+
+    vgui::TreeFolder* folder = nullptr;
+    while (lpsrc)
     {
-      v4 = _dynamic_cast(
-        lpsrc,
-        (const struct __class_type_info*)&`typeinfo for'vgui::Panel,
-        (const struct __class_type_info*)&`typeinfo for'vgui::TreeFolder,
-        0);
-      if (v4)
-      {
-        v3 = v4;
-        (*(void(__cdecl**)(void*, int))(*(_DWORD*)v4 + 184))(v4, 1);
-      }
-      lpsrc = (vgui::TreeFolder*)(*((int(__cdecl**)(vgui::TreeFolder*))lpsrc->_vptr_Panel + 8))(lpsrc);
-    } while (lpsrc);
-    if (v3)
-      (*(void(__cdecl**)(void*))(*(_DWORD*)v3 + 268))(v3);
+      folder = dynamic_cast<vgui::TreeFolder*>(lpsrc);
+      if (folder)
+        folder->invalidateLayout(true);
+      lpsrc = lpsrc->getParent();
+    }
+
+    if (folder)
+      folder->repaintParent();
   }
 }
 
@@ -221,7 +170,7 @@ void vgui::TreeFolder::init(const char* name)
   label->addInputSignal(new FooTreeFolderDefaultHandler{ this });
   label->setParent(this);
 
-  setLayout(new FooTabFolderVerticalLayout{54, 0}); // ???
+  setLayout(new FooTabFolderVerticalLayout{ 54, 0 }); // ???
 }
 
 vgui::TreeFolder::TreeFolder(const char* name)

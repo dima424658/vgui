@@ -8,21 +8,18 @@ namespace vgui
   class BorderLayoutInfo : public LayoutInfo
   {
   public:
-    virtual LayoutInfo *getThis() = 0;
+    virtual LayoutInfo* getThis() = 0;
 
     vgui::BorderLayout::Alignment _alignment;
   };
 };
 
 vgui::BorderLayout::BorderLayout(int inset)
-    : _inset{inset}
-{
-}
+  : _inset{ inset }
+{}
 
-void vgui::BorderLayout::performLayout(vgui::Panel *panel)
+void vgui::BorderLayout::performLayout(vgui::Panel* panel)
 {
-  vgui::BorderLayoutInfo *lpsrc;
-
   int x1 = 0, x1a;
   int y0 = 0, y0a;
   int i = 0, ia;
@@ -32,15 +29,14 @@ void vgui::BorderLayout::performLayout(vgui::Panel *panel)
 
   panel->getSize(wide, tall);
 
-  for (auto v2 = 0; v2 < panel->getChildCount(); ++v2)
+  for (auto j = 0; j < panel->getChildCount(); ++j)
   {
-    auto v6 = panel->getChild(v2);
-
-    lpsrc = dynamic_cast<vgui::BorderLayoutInfo *>(v6->getLayoutInfo());
+    auto child = panel->getChild(j);
+    auto lpsrc = dynamic_cast<vgui::BorderLayoutInfo*>(child->getLayoutInfo());
     if (lpsrc)
     {
-      auto tall = v6->getTall();
-      auto wide = v6->getWide();
+      auto tall = child->getTall();
+      auto wide = child->getWide();
 
       switch (lpsrc->_alignment)
       {
@@ -85,32 +81,30 @@ void vgui::BorderLayout::performLayout(vgui::Panel *panel)
 
   for (auto j = 0; j < panel->getChildCount(); ++j)
   {
-    vgui::BorderLayoutInfo *v17 = dynamic_cast<vgui::BorderLayoutInfo *>(panel->getChild(j)->getLayoutInfo());
+    auto lpsrc = dynamic_cast<vgui::BorderLayoutInfo*>(panel->getChild(j)->getLayoutInfo());
 
-    if (!v17)
-      continue;
-
-    auto v19 = panel->getChild(j);
-
-    switch (lpsrc->_alignment)
+    if (lpsrc)
     {
-    case vgui::BorderLayout::Alignment::a_center:
-      v19->setBounds(ia, _inset + y0, x1a - (_inset + y1), y0a);
-      break;
-    case vgui::BorderLayout::Alignment::a_north:
-      v19->setBounds(0, 0, wide, _inset + y0);
-      break;
-    case vgui::BorderLayout::Alignment::a_south:
-      v19->setBounds(0, y1a, wide, tall - y1a);
-      break;
-    case vgui::BorderLayout::Alignment::a_east:
-      v19->setBounds(x1a, _inset + y0, wide - x1a, y0a);
-      break;
-    case vgui::BorderLayout::Alignment::a_west:
-      v19->setBounds(0, _inset + y0, ia, y0a);
-      break;
-    default:
-      break;
+      switch (lpsrc->_alignment)
+      {
+      case vgui::BorderLayout::Alignment::a_center:
+        panel->getChild(j)->setBounds(ia, _inset + y0, x1a - (_inset + y1), y0a);
+        break;
+      case vgui::BorderLayout::Alignment::a_north:
+        panel->getChild(j)->setBounds(0, 0, wide, _inset + y0);
+        break;
+      case vgui::BorderLayout::Alignment::a_south:
+        panel->getChild(j)->setBounds(0, y1a, wide, tall - y1a);
+        break;
+      case vgui::BorderLayout::Alignment::a_east:
+        panel->getChild(j)->setBounds(x1a, _inset + y0, wide - x1a, y0a);
+        break;
+      case vgui::BorderLayout::Alignment::a_west:
+        panel->getChild(j)->setBounds(0, _inset + y0, ia, y0a);
+        break;
+      default:
+        break;
+      }
     }
   }
 }

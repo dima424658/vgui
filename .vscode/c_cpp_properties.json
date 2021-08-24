@@ -1,0 +1,55 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/include",
+                "/usr/include",
+                "/usr/include/linux",
+                "/usr/include/c++/11.1.0",
+                "/usr/include/c++/11.1.0/x86_64-pc-linux-gnu",
+                "/usr/include/c++/11.1.0/tr1"
+            ],
+            "defines": [
+                "LINUX",
+                "_LINUX ",
+                "NDEBUG",
+                "POSIX",
+                "_POSIX",
+                "LINUX",
+                "_LINUX",
+                "GNUC",
+                "HL1",
+                "stricmp=strcasecmp",
+                "_strnicmp=strncasecmp",
+                "strnicmp=strncasecmp",
+                "_snprintf=snprintf",
+                "QUIVER",
+                "QUAKE2",
+                "VALVE_DLL",
+                "_alloca=alloca",
+                "_vsnprintf=vsnprintf",
+                "NO_MALLOC_OVERRIDE",
+                "CLIENT_DLL",
+                "CLIENT_WEAPONS",
+                "HL_DLL -I/usr/include/malloc",
+                "_snwprintf=swprintf",
+                "DISABLE_JUMP_ORIGIN",
+                "DISABLE_VEC_ORIGIN"
+            ],
+            "compilerPath": "/usr/bin/clang",
+            "cStandard": "c17",
+            "cppStandard": "c++20",
+            "intelliSenseMode": "clang-x64",
+            "compilerArgs": [],
+            "configurationProvider": "vector-of-bool.cmake-tools",
+            "browse": {
+                "path": [
+                    "${workspaceFolder}/**"
+                ],
+                "limitSymbolsToIncludedHeaders": true
+            }
+        }
+    ],
+    "version": 4
+}
