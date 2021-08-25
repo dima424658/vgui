@@ -81,7 +81,8 @@
         "unordered_set": "cpp",
         "source_location": "cpp",
         "numbers": "cpp",
-        "semaphore": "cpp"
+        "semaphore": "cpp",
+        "*.inc": "cpp"
     },
     "cquery.cacheDirectory": "${workspaceFolder}/.vscode/cquery_cached_index/"
 }

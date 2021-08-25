@@ -2,7 +2,6 @@
 
 #include <VGUI_DataInputStream.h>
 
-#include <cstdint>
 
 vgui::BitmapTGA::BitmapTGA(vgui::InputStream *is, bool invertAlpha)
 {
@@ -14,10 +13,10 @@ bool vgui::BitmapTGA::loadTGA(vgui::InputStream *is, bool invertAlpha)
   uchar column;
   int columna;
   uchar packetSize;
-  uint8_t packetSizea;
+  uchar packetSizea;
   int packetSizeb;
   uchar j;
-  char ja;
+  uchar ja;
   uchar pixel_size;
   bool success = false;
 
@@ -186,7 +185,7 @@ bool vgui::BitmapTGA::loadTGA(vgui::InputStream *is, bool invertAlpha)
               columna = 0;
             }
 
-            if (packetSizea <= (uint8_t)++ja)
+            if (packetSizea <= ++ja)
               goto LABEL_25;
           }
         }
