@@ -1,51 +1,37 @@
 #include <VGUI_RadioButton.h>
 
-void vgui::RadioButton::paintBackground(vgui::RadioButton *const this)
-{
-  int wide; // [esp+28h] [ebp-14h] BYREF
-  int tall[4]; // [esp+2Ch] [ebp-10h] BYREF
+#include "handlers/FooRadioImage.h"
 
-  (*(void (__cdecl **)(vgui::RadioButton *const, int *, int *))(*(_DWORD *)this->baseclass_0 + 232))(this, &wide, tall);
-  (*(void (__cdecl **)(vgui::RadioButton *const, int))(*(_DWORD *)this->baseclass_0 + 372))(this, 8);
-  (*(void (__cdecl **)(vgui::RadioButton *const, _DWORD, _DWORD, int, int))(*(_DWORD *)this->baseclass_0 + 380))(
-    this,
-    0,
-    0,
-    wide,
-    tall[0]);
+void vgui::RadioButton::paintBackground()
+{
+  int wide, tall;
+
+  getPaintSize(wide, tall);
+  drawSetColor(vgui::Scheme::sc_secondary3);
+  drawFilledRect(0, 0, wide, tall);
 }
 
-void vgui::RadioButton::RadioButton(vgui::RadioButton *const this, const char *text, int x, int y, int wide, int tall)
+vgui::RadioButton::RadioButton(const char* text, int x, int y, int wide, int tall)
+  : vgui::ToggleButton{ text, x, y, wide, tall }
 {
-  vgui::Image *v6; // esi
+  int wide, tall;
 
-  vgui::ToggleButton::ToggleButton(this, text, x, y, wide, tall);
-  *(_DWORD *)this->baseclass_0 = &`vtable for'vgui::RadioButton + 2;
-  vgui::Label::setTextAlignment(this, a_east_0);
-  v6 = (vgui::Image *)operator new(0x28u);
-  vgui::Image::Image(v6);
-  v6[1]._vptr_Image = (int (**)(...))this;
-  v6->_vptr_Image = (int (**)(...))&off_46C48;
-  vgui::Image::setSize(v6, 20, 20);
-  vgui::Label::setImage(this, v6);
+  setTextAlignment(vgui::Label::Alignment::a_east);
+  setImage(new FooRadioImage{ this });
+
+  getContentSize(wide, tall);
+  setSize(wide, tall);
 }
 
-void vgui::RadioButton::RadioButton(vgui::RadioButton *const this, const char *text, int x, int y)
+vgui::RadioButton::RadioButton(const char* text, int x, int y)
+  : vgui::ToggleButton{ text, x, y }
 {
-  vgui::Image *v4; // esi
-  int wide; // [esp+18h] [ebp-14h] BYREF
-  int tall[4]; // [esp+1Ch] [ebp-10h] BYREF
+  int wide, tall;
 
-  vgui::ToggleButton::ToggleButton(this, text, x, y);
-  *(_DWORD *)this->baseclass_0 = &`vtable for'vgui::RadioButton + 2;
-  vgui::Label::setTextAlignment(this, a_east_0);
-  v4 = (vgui::Image *)operator new(0x28u);
-  vgui::Image::Image(v4);
-  v4[1]._vptr_Image = (int (**)(...))this;
-  v4->_vptr_Image = (int (**)(...))&off_46C48;
-  vgui::Image::setSize(v4, 20, 20);
-  vgui::Label::setImage(this, v4);
-  vgui::Label::getContentSize(this, &wide, tall);
-  vgui::Panel::setSize((vgui::Panel *const)this, wide, tall[0]);
+  setTextAlignment(vgui::Label::Alignment::a_east);
+  setImage(new FooRadioImage{ this });
+
+  getContentSize(wide, tall);
+  setSize(wide, tall);
 }
 
