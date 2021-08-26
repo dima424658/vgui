@@ -1,90 +1,77 @@
 #include <VGUI_FileInputStream.h>
 
-int vgui::FileInputStream::getAvailable(vgui::FileInputStream *const this, bool *const success)
+vgui::FileInputStream::FileInputStream(const char *fileName, bool textMode)
 {
-  *success = 0;
+  if (textMode)
+    _fp = fopen(fileName, "rt");
+  else
+    _fp = fopen(fileName, "rb");
+}
+
+void vgui::FileInputStream::seekStart(bool &success)
+{
+  if (_fp)
+    success = fseek(_fp, 0, 0) != 0;
+  else
+    success = false;
+}
+
+void vgui::FileInputStream::seekRelative(int count, bool &success)
+{
+  if (_fp)
+    success = fseek(_fp, 1, count) != 0;
+  else
+    success = false;
+}
+
+void vgui::FileInputStream::seekEnd(bool &success)
+{
+  if (_fp)
+    success = fseek(_fp, 2, 0) != 0;
+  else
+    success = false;
+}
+
+int vgui::FileInputStream::getAvailable(bool &success)
+{
+  success = false;
   return 0;
 }
 
-void vgui::FileInputStream::close(vgui::FileInputStream *const this)
+uchar vgui::FileInputStream::readUChar(bool &success)
 {
-  bool success[13]; // [esp+1Fh] [ebp-Dh] BYREF
+  uchar ret;
 
-  (*((void (__cdecl **)(vgui::FileInputStream *const, bool *))this->_vptr_InputStream + 6))(this, success);
-}
-
-void vgui::FileInputStream::close(vgui::FileInputStream *const this, bool *const success)
-{
-  if ( this->_fp )
-    *success = fclose(this->_fp) == 0;
-  else
-    *success = 0;
-}
-
-void vgui::FileInputStream::readUChar(vgui::FileInputStream *const this, uchar *buf, int count, bool *const success)
-{
-  if ( this->_fp )
-    *success = fread(buf, count, 1u, this->_fp) == 1;
-  else
-    *success = 0;
-}
-
-uchar vgui::FileInputStream::readUChar(vgui::FileInputStream *const this, bool *const success)
-{
-  FILE *v2; // eax
-  bool v3; // zf
-  uchar ret[13]; // [esp+1Fh] [ebp-Dh] BYREF
-
-  v2 = this->_fp;
-  if ( v2 )
+  if (_fp)
   {
-    v3 = fread(ret, 1u, 1u, this->_fp) == 1;
-    LOBYTE(v2) = ret[0];
-    *success = v3;
+    success = fread(&ret, 1u, 1u, _fp) == 1;
+    return ret;
   }
   else
   {
-    *success = 0;
+    success = false;
+    return 0;
   }
-  return (uint8_t)v2;
 }
 
-void vgui::FileInputStream::seekEnd(vgui::FileInputStream *const this, bool *const success)
+void vgui::FileInputStream::readUChar(uchar *buf, int count, bool &success)
 {
-  FILE *stream; // eax
-
-  stream = this->_fp;
-  if ( stream )
-    *success = fseek(stream, 2, 0) != 0;
+  if (_fp)
+    success = fread(buf, count, 1u, _fp) == 1;
   else
-    *success = 0;
+    success = false;
 }
 
-void vgui::FileInputStream::seekRelative(vgui::FileInputStream *const this, int count, bool *const success)
+void vgui::FileInputStream::close(bool &success)
 {
-  if ( this->_fp )
-    *success = fseek(this->_fp, 1, count) != 0;
+  if (_fp)
+    success = fclose(_fp) == 0;
   else
-    *success = 0;
+    success = false;
 }
 
-void vgui::FileInputStream::seekStart(vgui::FileInputStream *const this, bool *const success)
+void vgui::FileInputStream::close()
 {
-  FILE *stream; // eax
-
-  stream = this->_fp;
-  if ( stream )
-    *success = fseek(stream, 0, 0) != 0;
-  else
-    *success = 0;
+  bool success;
+  close(success);
 }
-
-void vgui::FileInputStream::FileInputStream(vgui::FileInputStream *const this, const char *fileName, bool textMode)
-{
-  this->_vptr_InputStream = (int (**)(...))(&`vtable for'vgui::FileInputStream + 2);
-  if ( textMode )
-    this->_fp = fopen(fileName, "rt");
-  else
-    this->_fp = fopen(fileName, "rb");
-}
-
