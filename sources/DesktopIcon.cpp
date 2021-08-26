@@ -7,7 +7,7 @@
 #include <VGUI_MiniApp.h>
 #include <VGUI_Font.h>
 
-#include <detail/FooHandler.h>
+#include "handlers/FooHandler.h"
 
 vgui::DesktopIcon::DesktopIcon(vgui::MiniApp *miniApp, vgui::Image *image)
     : vgui::Panel{0, 0, 32, 50},
@@ -24,7 +24,7 @@ vgui::DesktopIcon::DesktopIcon(vgui::MiniApp *miniApp, vgui::Image *image)
     setSize(wide, tall);
   }
 
-  addInputSignal(new detail::FooHandler);
+  addInputSignal(new handlers::FooHandler);
 }
 
 void vgui::DesktopIcon::doActivate()

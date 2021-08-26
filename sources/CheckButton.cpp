@@ -1,5 +1,7 @@
 #include <VGUI_CheckButton.h>
 
+#include "handlers/FooCheckImage.h"
+
 vgui::CheckButton::CheckButton(const char* text, int x, int y)
   : vgui::ToggleButton{ text, x, y }
 {
@@ -7,11 +9,9 @@ vgui::CheckButton::CheckButton(const char* text, int x, int y)
 
   setTextAlignment(vgui::Label::Alignment::a_east);
 
-  auto image = new vgui::Image;
-  image->setPos(x, y); // ??? возможно другие аргументы
-  image->setSize(20, 20);
-
+  auto image = new FooCheckImage{ this };
   setImage(image);
+  
   getContentSize(wide, tall);
   setSize(wide, tall);
 }
@@ -19,14 +19,9 @@ vgui::CheckButton::CheckButton(const char* text, int x, int y)
 vgui::CheckButton::CheckButton(const char* text, int x, int y, int wide, int tall)
   : vgui::ToggleButton{ text, x, y, wide, tall }
 {
-  vgui::Image* v6; // esi
-
   setTextAlignment(vgui::Label::Alignment::a_east);
 
-  auto image = new vgui::Image;
-  image->setPos(x, y); // ??? возможно другие аргументы
-  image->setSize(20, 20);
-
+  auto image = new FooCheckImage{ this };
   setImage(image);
 }
 
