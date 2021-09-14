@@ -25,7 +25,7 @@ void vgui::Panel::getPos(int& x, int& y)
 
 void vgui::Panel::setSize(int wide, int tall)
 {
-  _size[0] = std::max(tall, _minimumSize[0]);
+  _size[0] = std::max(wide, _minimumSize[0]);
   _size[1] = std::max(tall, _minimumSize[1]);
 }
 
@@ -548,6 +548,11 @@ int vgui::Panel::getWide()
 int vgui::Panel::getTall()
 {
   return _size[1];
+}
+
+vgui::Panel* vgui::Panel::getParent()
+{
+  return _parent;
 }
 
 bool vgui::Panel::isEnabled()
