@@ -2,15 +2,9 @@
 
 void vgui::Font::getTextSize(const char *text, int *const wide, int *const tall)
 {
-  const char *v4; // ebx
-  char v5;        // al
-  int v6;         // edx
-  int v7;         // eax
-  int v8;         // [esp+28h] [ebp-34h]
-  int v9;         // [esp+2Ch] [ebp-30h]
   int a;          // [esp+34h] [ebp-28h] BYREF
   int b;          // [esp+38h] [ebp-24h] BYREF
-  int c[8];       // [esp+3Ch] [ebp-20h] BYREF
+  int c;       // [esp+3Ch] [ebp-20h] BYREF
 
   v4 = text;
   *wide = 0;

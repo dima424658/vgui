@@ -24,123 +24,65 @@ void vgui::TabPanel::setSelectedTab(vgui::Panel* tab)
 
 void vgui::TabPanel::recomputeLayoutTop()
 {
-  int i, j, ja, jb, jc;
   int extra2;
   int maxx, miny;
-  int x = 0, y = 0;
+  int x = 5, y = 0;
   int wide, tall;
   int paintWide, paintTall;
   int ww, tt;
   int xx, yy;
 
-  (*((void(__cdecl**)(vgui::TabPanel* const, int*, int*))_vptr_Panel + 58))(this, &paintWide, &paintTall);
-  v1 = paintWide;
-  x[0] = 5;
-  v2 = (*((int(__cdecl**)(vgui::Panel*))_tabArea->_vptr_Panel + 43))(_tabArea) - 1;
-  if (v2 >= 0)
+  getPaintSize(paintWide, paintTall);
+  maxx = paintWide - 5;
+
+  auto j = 0;
+  for (auto i = _tabArea->getChildCount(); i > 0; --i)
   {
-    maxx = v1 - 5;
-    v3 = 0;
-    do
+    auto child = _tabArea->getChild(i);
+    child->getPreferredSize(wide, tall);
+    child->setSize(wide, tall);
+
+    if (x + wide <= maxx)
+      ++j;
+    else
     {
-      v5 = (*((int(__cdecl**)(vgui::Panel*, int))_tabArea->_vptr_Panel + 44))(_tabArea, v2);
-      (*(void(__cdecl**)(int, int*, int*))(*(_DWORD*)v5 + 240))(v5, &wide, tall);
-      v6 = (*((int(__cdecl**)(vgui::Panel*, int))_tabArea->_vptr_Panel + 44))(_tabArea, v2);
-      (*(void(__cdecl**)(int, int, int))(*(_DWORD*)v6 + 8))(v6, wide, tall[0]);
-      if (x[0] + wide <= maxx)
+      if (j)
       {
-        ++v3;
-      }
-      else
-      {
-        if (v3)
+        extra2 = (maxx - x) / j;
+        
+        for (j += i; j != i; --j)
         {
-          extra2 = (maxx - x[0]) / v3;
-          v7 = v3 * extra2;
-          v8 = v2 + v3;
-          v30 = v8;
-          if (v8 > v2)
-          {
-            v9 = 0;
-            i = v2;
-            v33 = extra2 + maxx - x[0] - v7;
-            do
-            {
-              v10 = extra2;
-              if (v8 == v30)
-                v10 = v33;
-              v11 = (*((int(__cdecl**)(vgui::Panel*, int))_tabArea->_vptr_Panel + 44))(_tabArea, v8);
-              (*(void(__cdecl**)(int, int*, int*))(*(_DWORD*)v11 + 240))(v11, &ww, &tt);
-              v12 = (*((int(__cdecl**)(vgui::Panel*, int))_tabArea->_vptr_Panel + 44))(_tabArea, v8);
-              (*(void(__cdecl**)(int, int*, int*))(*(_DWORD*)v12 + 4))(v12, &xx, &yy);
-              ja = v8--;
-              v13 = (*((int(__cdecl**)(vgui::Panel*, int))_tabArea->_vptr_Panel + 44))(_tabArea, ja);
-              v14 = v9 + xx;
-              v9 += v10;
-              (*(void(__cdecl**)(int, int, int, int, int))(*(_DWORD*)v13 + 16))(v13, v14, yy, v10 + ww, tt);
-            } while (v8 != i);
-            v2 = i;
-          }
+          _tabArea->getChild(j)->getPreferredSize(ww, tt);
+          _tabArea->getChild(j)->getPos(xx, yy);
+          _tabArea->getChild(j)->setBounds(i * extra2 + xx, yy, extra2 + ww, tt);
         }
-        x[0] = 5;
-        v3 = 1;
-        maxx -= 5;
-        y[0] += 4 - tall[0];
       }
-      j = v2--;
-      v4 = (void(__cdecl***)(_DWORD, int, int))(*((int(__cdecl**)(vgui::Panel*, int))_tabArea->_vptr_Panel
-        + 44))(
-          _tabArea,
-          j);
-      (**v4)(v4, x[0], y[0]);
-      x[0] += wide - 1;
-    } while (v2 != -1);
+      y += 4 - tall;
+      j = 1;
+      maxx -= 5;
+    }
+
+    child->setPos(x, y);
+    x += wide - 1;
   }
-  v15 = 0;
-  v16 = (*((int(__cdecl**)(vgui::Panel*, _DWORD))_tabArea->_vptr_Panel + 44))(_tabArea, 0);
-  (*(void(__cdecl**)(int, int*, int*))(*(_DWORD*)v16 + 4))(v16, x, miny);
-  while (1)
+
+  _tabArea->getChild(0)->getPos(x, miny);
+  for (auto i = 0; i < _tabArea->getChildCount(); ++i)
   {
-    v19 = v15 < (*((int(__cdecl**)(vgui::Panel*))_tabArea->_vptr_Panel + 43))(_tabArea);
-    v20 = _tabArea;
-    v21 = v20->_vptr_Panel;
-    if (!v19)
-      break;
-    v17 = v21[44](v20, v15);
-    (*(void(__cdecl**)(int, int*, int*))(*(_DWORD*)v17 + 4))(v17, x, y);
-    jb = v15++;
-    v18 = (void(__cdecl***)(_DWORD, int, int))(*((int(__cdecl**)(vgui::Panel*, int))_tabArea->_vptr_Panel + 44))(
-      _tabArea,
-      jb);
-    (**v18)(v18, x[0], y[0] - miny[0]);
+    _tabArea->getChild(i)->getPos(x, y);
+    _tabArea->getChild(i)->setPos(x, y - miny);
   }
-  v22 = v21[44](v20, 0);
-  (*(void(__cdecl**)(int, int*, int*))(*(_DWORD*)v22 + 12))(v22, &wide, tall);
-  (*((void(__cdecl**)(vgui::Panel*, _DWORD, int, int, int))_tabArea->_vptr_Panel + 4))(
-    _tabArea,
-    0,
-    5,
-    paintWide,
-    tall[0] - miny[0]);
-  (*((void(__cdecl**)(vgui::Panel*, int*, int*))_tabArea->_vptr_Panel + 3))(_tabArea, &wide, tall);
-  (*((void(__cdecl**)(vgui::Panel*, _DWORD, int, int, int))_clientArea->_vptr_Panel + 4))(
-    _clientArea,
-    0,
-    tall[0] + 4,
-    paintWide,
-    paintTall - tall[0] - 5);
-  v23 = 0;
-  (*((void(__cdecl**)(vgui::Panel*, int*, int*))_clientArea->_vptr_Panel + 3))(
-    _clientArea,
-    &wide,
-    tall);
-  while (v23 < (*((int(__cdecl**)(vgui::Panel*))_clientArea->_vptr_Panel + 43))(_clientArea))
+
+  _tabArea->getChild(0)->getSize(wide, tall);
+  _tabArea->setBounds(0, 5, paintWide, tall - miny);
+  _tabArea->getSize(wide, tall);
+  
+  _clientArea->setBounds(0, tall + 4, paintWide, paintTall - tall - 5);
+  _clientArea->getSize(wide, tall);
+  for (auto i = 0; i < _clientArea->getChildCount(); ++i)
   {
-    v24 = (*((int(__cdecl**)(vgui::Panel*, int))_clientArea->_vptr_Panel + 44))(_clientArea, v23);
-    (*(void(__cdecl**)(int, int, int, int, int))(*(_DWORD*)v24 + 16))(v24, 5, 5, wide - 10, tall[0] - 10);
-    jc = v23++;
-    v25 = (*((int(__cdecl**)(vgui::Panel*, int))_clientArea->_vptr_Panel + 44))(_clientArea, jc);
-    (*(void(__cdecl**)(int, _DWORD))(*(_DWORD*)v25 + 184))(v25, 0);
+    _clientArea->getChild(i)->setBounds(5, 5, wide - 10, tall - 10);
+    _clientArea->getChild(i)->invalidateLayout(false);
   }
 }
 
@@ -160,7 +102,7 @@ void vgui::TabPanel::recomputeLayout()
   }
 }
 
-void vgui::TabPanel::TabPanel(int x, int y, int wide, int tall)
+vgui::TabPanel::TabPanel(int x, int y, int wide, int tall)
   : vgui::Panel{ x, y, wide, tall }
 {
   _tabPlacement = TabPlacement::tp_top;
