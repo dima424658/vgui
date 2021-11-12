@@ -122,104 +122,18 @@ void vgui::HeaderPanel::addSectionPanel(vgui::Panel* panel)
     x += wide + _sliderWide;
   }
 
-  v6 = _sectionPanelDar._capacity;
-  v7 = v2 + 1;
-  v8 = &_sectionPanelDar;
-  if (v7 <= v6)
-  {
-    v9 = _sectionPanelDar._data;
-    goto LABEL_7;
-  }
-  if (v6 || (v6 = 1, v24 = 4, v7 > 1))
-  {
-    do
-      v6 *= 2;
-    while (v7 > v6);
-    v24 = 4 * v6;
-  }
-  v25 = (_BYTE*)operator new[](v24);
-  v9 = (vgui::Panel**)v25;
-  if (!v25)
-    goto LABEL_64;
-  v36 = v24;
-  v26 = v25;
-  if (v36 >= 8)
-  {
-    if (((uint8_t)v25 & 1) != 0)
-    {
-      *v25 = 0;
-      v26 = v25 + 1;
-      --v36;
-    }
-    if (((uint8_t)v26 & 2) != 0)
-    {
-      *v26++ = 0;
-      v36 -= 2;
-    }
-    if (((uint8_t)v26 & 4) != 0)
-    {
-      *(_DWORD*)v26 = 0;
-      v26 += 2;
-      v36 -= 4;
-    }
-    memset(v26, 0, 4 * (v36 >> 2));
-    v26 += 2 * (v36 >> 2);
-    LOBYTE(v36) = v36 & 3;
-  }
-  if ((v36 & 4) == 0)
-  {
-    if ((v36 & 2) == 0)
-      goto LABEL_18;
-  LABEL_46:
-    *v26++ = 0;
-    if ((v36 & 1) == 0)
-      goto LABEL_19;
-    goto LABEL_45;
-  }
-  *(_DWORD*)v26 = 0;
-  v26 += 2;
-  if ((v36 & 2) != 0)
-    goto LABEL_46;
-LABEL_18:
-  if ((v36 & 1) != 0)
-    LABEL_45 :
-    *(_BYTE*)v26 = 0;
-LABEL_19:
-  v3 = _sectionPanelDar._count;
-  _sectionPanelDar._capacity = v6;
-  if (v3 > 0)
-  {
-    v27 = 0;
-    do
-    {
-      v9[v27] = _sectionPanelDar._data[v27];
-      ++v27;
-      v3 = v8->_count;
-    } while (v27 < v8->_count);
-  }
-  v28 = _sectionPanelDar._data;
-  if (v28)
-  {
-    v33 = v9;
-    operator delete[]((VFontData* const)v28);
-    v3 = _sectionPanelDar._count;
-    v9 = v33;
-  }
-  _sectionPanelDar._data = v9;
-LABEL_7:
-  v9[v3] = panel;
-  v10 = x;
-  ++_sectionPanelDar._count;
-  (*panel->_vptr_Panel)(panel, v10, 0);
-  (*((void(__cdecl**)(vgui::Panel*, vgui::Panel*))panel->_vptr_Panel + 16))(panel, _sectionLayer);
-  (*((void(__cdecl**)(vgui::Panel*, int, int, int, int))panel->_vptr_Panel + 4))(panel, x, y, wide, tall[0]);
-  (*((void(__cdecl**)(vgui::HeaderPanel* const, int*, int*))_vptr_Panel + 58))(this, &wide, tall);
-  v11 = (vgui::Panel*)operator new(0xBCu);
-  vgui::Panel::Panel(v11, 0, 0, _sliderWide, tall[0]);
-  (*((void(__cdecl**)(vgui::Panel*, _DWORD))v11->_vptr_Panel + 54))(v11, 0);
-  (*((void(__cdecl**)(vgui::Panel*, _DWORD))v11->_vptr_Panel + 55))(v11, 0);
-  (*((void(__cdecl**)(vgui::Panel*, _DWORD))v11->_vptr_Panel + 56))(v11, 0);
-  (*v11->_vptr_Panel)(v11, wide + x, 0);
+  _sectionPanelDar.addElement(panel);
+  panel->setParent(_sectionLayer);
+  panel->setBounds(x, y, wide, tall);
+
+  getPaintSize(wide, tall);
+
+  auto v11 = new vgui::Panel{0, 0, _sliderWide, tall};
+  v11->setPaintBorderEnabled(false);
+  v11->setPaintBackgroundEnabled(false);
+  v11->setPaintEnabled(false);
+  v11->setPos(wide + x, 0);
+  
   v12 = (void(__cdecl*)(vgui::Panel*, _DWORD*)) * ((_DWORD*)v11->_vptr_Panel + 28);
   v13 = operator new(8u);
   *v13 = &off_449A8;
@@ -325,125 +239,14 @@ LABEL_9:
   (*((void(__cdecl**)(vgui::HeaderPanel* const))_vptr_Panel + 12))(this);
 }
 
-void vgui::HeaderPanel::HeaderPanel(int x, int y, int wide, int tall)
+vgui::HeaderPanel::HeaderPanel(int x, int y, int wide, int tall)
+  : vgui::Panel{x, y, wide, tall},
+    _sliderWide{11},
+    _dragging{false},
+    _sectionLayer{new vgui::Panel{0, 0, wide, tall}}
 {
-  int v5; // eax
-  int v6; // ecx
-  int v7; // edx
-  vgui::Panel** v8; // edx
-  int v9; // eax
-  int v10; // ecx
-  int v11; // edx
-  vgui::Panel** v12; // edx
-  int v13; // eax
-  int v14; // ecx
-  int v15; // edx
-  vgui::ChangeSignal** v16; // edx
-  vgui::Panel* v17; // esi
-  int v18; // [esp+2Ch] [ebp-20h]
-  int v19; // [esp+2Ch] [ebp-20h]
-  int v20; // [esp+2Ch] [ebp-20h]
-
-  vgui::Panel::Panel(this, x, y, wide, tall);
-  _sliderPanelDar._count = 0;
-  _sliderPanelDar._capacity = 0;
-  _vptr_Panel = (int (**)(...))(&`vtable for'vgui::HeaderPanel + 2);
-    _sliderPanelDar._data = 0;
-  v5 = operator new[](0x10u);
-  if (!v5)
-    goto LABEL_20;
-  *(_DWORD*)v5 = 0;
-  *(_DWORD*)(v5 + 4) = 0;
-  *(_DWORD*)(v5 + 8) = 0;
-  *(_DWORD*)(v5 + 12) = 0;
-  v6 = _sliderPanelDar._count;
-  _sliderPanelDar._capacity = 4;
-  if (v6 > 0)
-  {
-    v7 = 0;
-    do
-    {
-      *(_DWORD*)(v5 + 4 * v7) = _sliderPanelDar._data[v7];
-      ++v7;
-    } while (v7 < _sliderPanelDar._count);
-  }
-  v8 = _sliderPanelDar._data;
-  if (v8)
-  {
-    v18 = v5;
-    operator delete[]((VFontData* const)v8);
-    v5 = v18;
-  }
-  _sliderPanelDar._data = (vgui::Panel**)v5;
-  _sectionPanelDar._count = 0;
-  _sectionPanelDar._capacity = 0;
-  _sectionPanelDar._data = 0;
-  v9 = operator new[](0x10u);
-  if (!v9)
-    goto LABEL_20;
-  *(_DWORD*)v9 = 0;
-  *(_DWORD*)(v9 + 4) = 0;
-  *(_DWORD*)(v9 + 8) = 0;
-  *(_DWORD*)(v9 + 12) = 0;
-  v10 = _sectionPanelDar._count;
-  _sectionPanelDar._capacity = 4;
-  if (v10 > 0)
-  {
-    v11 = 0;
-    do
-    {
-      *(_DWORD*)(v9 + 4 * v11) = _sectionPanelDar._data[v11];
-      ++v11;
-    } while (v11 < _sectionPanelDar._count);
-  }
-  v12 = _sectionPanelDar._data;
-  if (v12)
-  {
-    v19 = v9;
-    operator delete[]((VFontData* const)v12);
-    v9 = v19;
-  }
-  _sectionPanelDar._data = (vgui::Panel**)v9;
-  _changeSignalDar._count = 0;
-  _changeSignalDar._capacity = 0;
-  _changeSignalDar._data = 0;
-  v13 = operator new[](0x10u);
-  if (!v13)
-    LABEL_20:
-  exit(0);
-  *(_DWORD*)v13 = 0;
-  *(_DWORD*)(v13 + 4) = 0;
-  *(_DWORD*)(v13 + 8) = 0;
-  *(_DWORD*)(v13 + 12) = 0;
-  v14 = _changeSignalDar._count;
-  _changeSignalDar._capacity = 4;
-  if (v14 > 0)
-  {
-    v15 = 0;
-    do
-    {
-      *(_DWORD*)(v13 + 4 * v15) = _changeSignalDar._data[v15];
-      ++v15;
-    } while (v15 < _changeSignalDar._count);
-  }
-  v16 = _changeSignalDar._data;
-  if (v16)
-  {
-    v20 = v13;
-    operator delete[]((VFontData* const)v16);
-    v13 = v20;
-  }
-  _changeSignalDar._data = (vgui::ChangeSignal**)v13;
-  _sliderWide = 11;
-  _dragging = 0;
-  v17 = (vgui::Panel*)operator new(0xBCu);
-  vgui::Panel::Panel(v17, 0, 0, wide, tall);
-  _sectionLayer = v17;
-  (*((void(__cdecl**)(vgui::Panel*, _DWORD))v17->_vptr_Panel + 54))(v17, 0);
-  (*((void(__cdecl**)(vgui::Panel*, _DWORD))_sectionLayer->_vptr_Panel + 55))(_sectionLayer, 0);
-  (*((void(__cdecl**)(vgui::Panel*, _DWORD))_sectionLayer->_vptr_Panel + 56))(_sectionLayer, 0);
-  (*((void(__cdecl**)(vgui::Panel*, vgui::HeaderPanel* const))_sectionLayer->_vptr_Panel + 16))(
-    _sectionLayer,
-    this);
+  _sectionLayer->setPaintBorderEnabled(false);
+  _sectionLayer->setPaintBackgroundEnabled(false);
+  _sectionLayer->setPaintEnabled(false);
+  _sectionLayer->setParent(this);
 }
-
