@@ -1,7 +1,9 @@
 #include <VGUI_Layout.h>
 
-void vgui::Layout::Layout(vgui::Layout *const this)
+vgui::Layout::Layout()
 {
-  this->_vptr_Layout = (int (**)(...))(&`vtable for'vgui::Layout + 2);
 }
 
+void vgui::Layout::performLayout(vgui::Panel *panel)
+{
+}
