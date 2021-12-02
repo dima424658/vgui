@@ -1,162 +1,151 @@
 #include <VGUI_Image.h>
+#include <VGUI_Panel.h>
 
-void vgui::Image::setPos(vgui::Image *const this, int x, int y)
+void vgui::Image::setPos(int x, int y)
 {
-  this->_pos[0] = x;
-  this->_pos[1] = y;
+  _pos[0] = x;
+  _pos[1] = y;
 }
 
-void vgui::Image::getPos(vgui::Image *const this, int *const x, int *const y)
+void vgui::Image::setSize(int wide, int tall)
 {
-  *(_QWORD *)x = *(_QWORD *)this->_pos;
+  _size[0] = wide;
+  _size[1] = tall;
 }
 
-void vgui::Image::getSize(vgui::Image *const this, int *const wide, int *const tall)
+void vgui::Image::getPos(int& x, int& y)
 {
-  *(_QWORD *)wide = *(_QWORD *)this->_size;
+  x = _pos[0];
+  y = _pos[1];
 }
 
-void vgui::Image::setSize(vgui::Image *const this, int wide, int tall)
+void vgui::Image::getSize(int& wide, int& tall)
 {
-  this->_size[0] = wide;
-  this->_size[1] = tall;
+  wide = _size[0];
+  tall = _size[1];
 }
 
-void vgui::Image::drawSetColor(vgui::Image *const this, vgui::Scheme::SchemeColor sc)
+void vgui::Image::drawSetColor(vgui::Scheme::SchemeColor sc)
 {
-  (*((void (__cdecl **)(vgui::Panel *))this->_panel->_vptr_Panel + 93))(this->_panel);
+  _panel->drawSetColor(sc);
 }
 
-void vgui::Image::drawSetColor(vgui::Image *const this, int r, int g, int b, int a)
+void vgui::Image::drawSetColor(int r, int g, int b, int a)
 {
-  (*((void (__cdecl **)(vgui::Panel *))this->_panel->_vptr_Panel + 94))(this->_panel);
+  _panel->drawSetColor(r, g, b, a);
 }
 
-void vgui::Image::drawFilledRect(vgui::Image *const this, int x0, int y0, int x1, int y1)
+void vgui::Image::drawFilledRect(int x0, int y0, int x1, int y1)
 {
-  (*((void (__cdecl **)(vgui::Panel *, int, int, int, int))this->_panel->_vptr_Panel + 95))(
-    this->_panel,
-    x0 + this->_pos[0],
-    y0 + this->_pos[1],
-    this->_pos[0] + x1,
-    this->_pos[1] + y1);
+  _panel->drawFilledRect(
+    x0 + _pos[0],
+    y0 + _pos[1],
+    _pos[0] + x1,
+    _pos[1] + y1);
 }
 
-void vgui::Image::drawOutlinedRect(vgui::Image *const this, int x0, int y0, int x1, int y1)
+void vgui::Image::drawOutlinedRect(int x0, int y0, int x1, int y1)
 {
-  (*((void (__cdecl **)(vgui::Panel *, int, int, int, int))this->_panel->_vptr_Panel + 96))(
-    this->_panel,
-    x0 + this->_pos[0],
-    y0 + this->_pos[1],
-    this->_pos[0] + x1,
-    this->_pos[1] + y1);
+  _panel->drawOutlinedRect(
+    x0 + _pos[0],
+    y0 + _pos[1],
+    _pos[0] + x1,
+    _pos[1] + y1);
 }
 
-void vgui::Image::drawSetTextFont(vgui::Image *const this, vgui::Scheme::SchemeFont sf)
+void vgui::Image::drawSetTextFont(vgui::Scheme::SchemeFont sf)
 {
-  (*((void (__cdecl **)(vgui::Panel *))this->_panel->_vptr_Panel + 97))(this->_panel);
+  _panel->drawSetTextFont(sf);
 }
 
-void vgui::Image::drawSetTextFont(vgui::Image *const this, vgui::Font *font)
+void vgui::Image::drawSetTextFont(vgui::Font* font)
 {
-  (*((void (__cdecl **)(vgui::Panel *))this->_panel->_vptr_Panel + 98))(this->_panel);
+  _panel->drawSetTextFont(font);
 }
 
-void vgui::Image::drawSetTextColor(vgui::Image *const this, vgui::Scheme::SchemeColor sc)
+void vgui::Image::drawSetTextColor(vgui::Scheme::SchemeColor sc)
 {
-  (*((void (__cdecl **)(vgui::Panel *))this->_panel->_vptr_Panel + 99))(this->_panel);
+  _panel->drawSetTextColor(sc);
 }
 
-void vgui::Image::drawSetTextColor(vgui::Image *const this, int r, int g, int b, int a)
+void vgui::Image::drawSetTextColor(int r, int g, int b, int a)
 {
-  (*((void (__cdecl **)(vgui::Panel *))this->_panel->_vptr_Panel + 100))(this->_panel);
+  _panel->drawSetTextColor(r, g, b, a);
 }
 
-void vgui::Image::drawSetTextPos(vgui::Image *const this, int x, int y)
+void vgui::Image::drawSetTextPos(int x, int y)
 {
-  (*((void (__cdecl **)(vgui::Panel *, int, int))this->_panel->_vptr_Panel + 101))(
-    this->_panel,
-    this->_pos[0] + x,
-    this->_pos[1] + y);
+  _panel->drawSetTextPos(
+    _pos[0] + x,
+    _pos[1] + y);
 }
 
-void vgui::Image::drawPrintText(vgui::Image *const this, const char *str, int strlen)
+void vgui::Image::drawPrintText(const char* str, int strlen)
 {
-  (*((void (__cdecl **)(vgui::Panel *))this->_panel->_vptr_Panel + 102))(this->_panel);
+  _panel->drawPrintText(str, strlen);
 }
 
-void vgui::Image::drawPrintText(vgui::Image *const this, int x, int y, const char *str, int strlen)
+void vgui::Image::drawPrintText(int x, int y, const char* str, int strlen)
 {
-  (*((void (__cdecl **)(vgui::Panel *, int, int))this->_panel->_vptr_Panel + 103))(
-    this->_panel,
-    this->_pos[0] + x,
-    this->_pos[1] + y);
+  _panel->drawPrintText(
+    _pos[0] + x,
+    _pos[1] + y,
+    str, strlen);
 }
 
-void vgui::Image::drawPrintChar(vgui::Image *const this, char ch)
+void vgui::Image::drawPrintChar(char ch)
 {
-  (*((void (__cdecl **)(vgui::Panel *, _DWORD))this->_panel->_vptr_Panel + 104))(this->_panel, ch);
+  _panel->drawPrintChar(ch);
 }
 
-void vgui::Image::drawPrintChar(vgui::Image *const this, int x, int y, char ch_0)
+void vgui::Image::drawPrintChar(int x, int y, char ch_0)
 {
-  (*((void (__cdecl **)(vgui::Panel *, int, int, _DWORD))this->_panel->_vptr_Panel + 105))(
-    this->_panel,
-    this->_pos[0] + x,
-    this->_pos[1] + y,
+  _panel->drawPrintChar(
+    _pos[0] + x,
+    _pos[1] + y,
     ch_0);
 }
 
-void vgui::Image::drawSetTextureRGBA(vgui::Image *const this, int id, const char *rgba, int wide, int tall)
+void vgui::Image::drawSetTextureRGBA(int id, const char* rgba, int wide, int tall)
 {
-  (*((void (__cdecl **)(vgui::Panel *))this->_panel->_vptr_Panel + 106))(this->_panel);
+  _panel->drawSetTextureRGBA(id, rgba, wide, tall);
 }
 
-void vgui::Image::drawSetTexture(vgui::Image *const this, int id)
+void vgui::Image::drawSetTexture(int id)
 {
-  (*((void (__cdecl **)(vgui::Panel *))this->_panel->_vptr_Panel + 107))(this->_panel);
+  _panel->drawSetTexture(id);
 }
 
-void vgui::Image::drawTexturedRect(vgui::Image *const this, int x0, int y0, int x1, int y1)
+void vgui::Image::drawTexturedRect(int x0, int y0, int x1, int y1)
 {
-  (*((void (__cdecl **)(vgui::Panel *))this->_panel->_vptr_Panel + 108))(this->_panel);
+  _panel->drawTexturedRect(x0, y0, x1, y1);
+  /*
+  _panel->drawTexturedRect(
+    x0 + _pos[0],
+    y0 + _pos[1],
+    _pos[0] + x1,
+    _pos[1] + y1); ?? */
 }
 
-void vgui::Image::doPaint(vgui::Image *const this, vgui::Panel *panel)
+void vgui::Image::doPaint(vgui::Panel* panel)
 {
-  int (**v2)(...); // edx
-
-  v2 = this->_vptr_Image;
-  this->_panel = panel;
-  v2[22](this, panel);
-  this->_panel = 0;
+  _panel = panel;
+  paint(panel);
+  _panel = nullptr;
 }
 
-void vgui::Image::setColor(vgui::Image *const this, vgui::Color *p_color)
+void vgui::Image::setColor(vgui::Color p_color)
 {
-  *(_DWORD *)this->_color._color = *(_DWORD *)p_color->_color;
-  this->_color._schemeColor = p_color->_schemeColor;
+  _color = p_color;
 }
 
-void vgui::Image::getColor(vgui::Image *const this, vgui::Color *const color)
+void vgui::Image::getColor(vgui::Color& color)
 {
-  *(_DWORD *)color->_color = *(_DWORD *)this->_color._color;
-  color->_schemeColor = this->_color._schemeColor;
+  color = _color;
 }
 
-void vgui::Image::Image(vgui::Image *const this)
+vgui::Image::Image() : _pos{ 0, 0 }, _size{ 0, 0 }, _panel{ nullptr }, _color{ 255, 255, 255, 0 }
 {
-  vgui::Color v1; // [esp+24h] [ebp-18h] BYREF
-
-  this->_vptr_Image = (int (**)(...))(&`vtable for'vgui::Image + 2);
-  vgui::Color::Color(&this->_color);
-  this->_panel = 0;
-  this->_pos[0] = 0;
-  this->_pos[1] = 0;
-  this->_size[0] = 0;
-  this->_size[1] = 0;
-  vgui::Color::Color(&v1, 255, 255, 255, 0);
-  *(_DWORD *)this->_color._color = *(_DWORD *)v1._color;
-  this->_color._schemeColor = v1._schemeColor;
+  
 }
 

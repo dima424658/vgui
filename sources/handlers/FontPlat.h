@@ -2,9 +2,12 @@
 
 #include "CUtlRBTree.h"
 
+#include "BaseFontPlat.h"
+#include "VFontData.hpp"
+
 namespace vgui
 {
-    class FontPlat
+    class FontPlat : public vgui::BaseFontPlat
     {
     public:
         struct abc_t
@@ -20,7 +23,9 @@ namespace vgui
             abc_t abc;
         };
 
-        bool equals(char const *, int, int, float, int, bool, bool, bool, bool);
+        FontPlat(VFontData bitmapFont);
+        FontPlat(const char* name, int tall, int wide, float rotation, int weight, bool italic, bool underline, bool strikeout, bool symbol);
+        int equals(const char* name, int tall, int wide, float rotation, int weight, bool italic, bool underline, bool strikeout, bool symbol);
         void getCharRGBA(int, int, int, int, int, uchar *);
         void getCharABCwide(int, int &, int &, int &);
         int getTall();

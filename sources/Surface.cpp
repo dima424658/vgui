@@ -1,252 +1,145 @@
 #include <VGUI_Surface.h>
+#include <VGUI_Panel.h>
 
-void vgui::Surface::Surface(vgui::Surface *const this, vgui::Panel *embeddedPanel)
+#include <VGUI_Bitmap.h>
+#include <VGUI_Font.h>
+#include <VGUI_ImagePanel.h>
+#include "handlers/BaseFontPlat.h"
+#include "handlers/SurfacePlat.hpp"
+
+vgui::Surface::Surface(vgui::Panel* embeddedPanel)
+  : vgui::SurfaceBase{ embeddedPanel }
 {
-  char **v2; // eax
-  char **v3; // esi
-  int v4; // eax
-  int v5; // edx
-
-  vgui::SurfaceBase::SurfaceBase(this, embeddedPanel);
-  this->_vptr_SurfaceBase = (int (**)(...))(&`vtable for'vgui::Surface + 2);
-  this->_modeInfoDar._count = 0;
-  this->_modeInfoDar._capacity = 0;
-  this->_modeInfoDar._data = 0;
-  v2 = (char **)operator new[](0x10u);
-  v3 = v2;
-  if ( !v2 )
-    exit(0);
-  *v2 = 0;
-  v2[1] = 0;
-  v2[2] = 0;
-  v2[3] = 0;
-  v4 = this->_modeInfoDar._count;
-  this->_modeInfoDar._capacity = 4;
-  if ( v4 > 0 )
-  {
-    v5 = 0;
-    do
-    {
-      v3[v5] = this->_modeInfoDar._data[v5];
-      ++v5;
-    }
-    while ( v5 < this->_modeInfoDar._count );
-  }
-  if ( this->_modeInfoDar._data )
-    operator delete[]((VFontData *const)this->_modeInfoDar._data);
-  this->_modeInfoDar._data = v3;
-  vgui::Surface::createPlat(this);
-  vgui::Surface::recreateContext(this);
+  createPlat();
+  recreateContext();
 }
 
-void vgui::Surface::createPopup(vgui::Surface *const this, vgui::Panel *embeddedPanel)
+void vgui::Surface::createPopup(vgui::Panel* embeddedPanel)
 {
-  vgui::Surface *v2; // eax
-
-  (*((void (__cdecl **)(vgui::Panel *, _DWORD))embeddedPanel->_vptr_Panel + 16))(embeddedPanel, 0);
-  v2 = (vgui::Surface *)operator new(0x3Cu);
-  vgui::Surface::Surface(v2, embeddedPanel);
+  embeddedPanel->setParent(nullptr);
+  auto v2 = new vgui::Surface{ embeddedPanel }; // ???
 }
 
-bool vgui::Surface::createPlat(vgui::Surface *const this)
+bool vgui::Surface::createPlat()
 {
-  return 1;
+  return true;
 }
 
-bool vgui::Surface::recreateContext(vgui::Surface *const this)
+bool vgui::Surface::recreateContext()
 {
-  int v1; // eax
-  int wide; // [esp+18h] [ebp-14h] BYREF
-  int tall[4]; // [esp+1Ch] [ebp-10h] BYREF
+  int wide, tall;
+  getPanel()->getSize(wide, tall);
 
-  v1 = (*this->_vptr_SurfaceBase)(this);
-  (*(void (__cdecl **)(int, int *, int *))(*(_DWORD *)v1 + 12))(v1, &wide, tall);
-  return 1;
+  return true;
 }
 
-void vgui::Surface::drawOutlinedRect(vgui::Surface *const this, int x0, int y0, int x1, int y1)
+void vgui::Surface::drawOutlinedRect(int x0, int y0, int x1, int y1)
 {
-  (*((void (__cdecl **)(vgui::Surface *const, int, int, int, int))this->_vptr_SurfaceBase + 19))(
-    this,
-    x0,
-    y0,
-    x1,
-    y0 + 1);
-  (*((void (__cdecl **)(vgui::Surface *const, int, int, int, int))this->_vptr_SurfaceBase + 19))(
-    this,
-    x0,
-    y1 - 1,
-    x1,
-    y1);
-  (*((void (__cdecl **)(vgui::Surface *const, int, int, int, int))this->_vptr_SurfaceBase + 19))(
-    this,
-    x0,
-    y0 + 1,
-    x0 + 1,
-    y1 - 1);
-  (*((void (__cdecl **)(vgui::Surface *const, int, int, int, int))this->_vptr_SurfaceBase + 19))(
-    this,
-    x1 - 1,
-    y0 + 1,
-    x1,
-    y1 - 1);
+  drawFilledRect(x0, y0, x1, y0 + 1);
+  drawFilledRect(x0, y1 - 1, x1, y1);
+  drawFilledRect(x0, y0 + 1, x0 + 1, y1 - 1);
+  drawFilledRect(x1 - 1, y0 + 1, x1, y1 - 1);
 }
 
-int vgui::Surface::createNewTextureID(vgui::Surface *const this)
+int vgui::Surface::createNewTextureID()
 {
-  return vgui::Surface::createNewTextureID(void)::staticBindIndex++;
+  static int staticBindIndex = 2700; // ??? 
+  return staticBindIndex++;
 }
 
-void vgui::Surface::drawSetTexture(vgui::Surface *const this, int id)
+struct Texture
 {
-  `anonymous namespace'::Texture *v2; // eax
+  int _id;
+};
 
-  v2 = staticTextureCurrent;
-  if ( staticTextureCurrent && id == staticTextureCurrent->_id || (v2 = 0, staticTextureCount <= 0) )
-  {
-LABEL_9:
-    staticTextureCurrent = v2;
+constexpr int staticTextureMaxCount = 128;
+
+static Texture* staticTextureCurrent;
+static int staticTextureCount = 0;
+static Texture staticTexture[staticTextureMaxCount];
+
+void vgui::Surface::drawSetTexture(int id)
+{
+  if (staticTextureCurrent && id == staticTextureCurrent->_id)
     return;
-  }
-  if ( id != staticTexture[0]._id )
+
+  for (auto i = 0; i < staticTextureCount; ++i)
+    if (staticTexture[i]._id == id)
+      staticTextureCurrent = &staticTexture[i];
+}
+
+void vgui::Surface::pushMakeCurrent(vgui::Panel* panel, bool useInsets)
+{
+  int inset[4]{ 0, 0, 0, 0 }, absThis[4], absPanel[4], clipRect[4];
+
+  if (useInsets)
+    panel->getInset(inset[0], inset[1], inset[2], inset[3]);
+
+  getPanel()->getAbsExtents(absThis[0], absThis[1], absThis[2], absThis[3]);
+  panel->getAbsExtents(absPanel[0], absPanel[1], absPanel[2], absPanel[3]);
+  panel->getClipRect(clipRect[0], clipRect[1], clipRect[2], clipRect[3]);
+}
+
+void vgui::Surface::drawSetTextFont(vgui::Font* font)
+{
+  if (font)
+    font->_plat->drawSetTextFont(_plat);
+}
+
+bool vgui::Surface::hasFocus()
+{
+  return true;
+}
+
+int vgui::Surface::getModeInfoCount()
+{
+  addModeInfo(640, 480, 16);
+  addModeInfo(800, 600, 16);
+
+  return getModeInfoCount();
+}
+
+void vgui::Surface::drawSetTextureRGBA(int id, const char* rgba, int wide, int tall)
+{
+  if (staticTextureCurrent && id == staticTextureCurrent->_id)
+    return;
+
+  for (auto i = 0; i < staticTextureCount; ++i)
+    if (staticTexture[i]._id == id)
+      return;
+
+  if (staticTextureCount <= staticTextureMaxCount - 1)
+    staticTexture[staticTextureCount++]._id = id;
+}
+
+void vgui::Surface::setCursor(vgui::Cursor* cursor)
+{
+  _currentCursor = cursor;
+
+  if (cursor)
   {
-    while ( 1 )
-    {
-      v2 = (`anonymous namespace'::Texture *)((char *)v2 + 1);
-      if ( v2 == (`anonymous namespace'::Texture *)staticTextureCount )
-        break;
-      if ( id == staticTexture[(_DWORD)v2]._id )
-        goto LABEL_10;
-    }
-    v2 = 0;
-    goto LABEL_9;
-  }
-  v2 = 0;
-LABEL_10:
-  staticTextureCurrent = &staticTexture[(_DWORD)v2];
-}
-
-void vgui::Surface::pushMakeCurrent(vgui::Surface *const this, vgui::Panel *panel, bool useInsets)
-{
-  int v3; // eax
-  int inset[4]; // [esp+20h] [ebp-4Ch] BYREF
-  int absThis[4]; // [esp+30h] [ebp-3Ch] BYREF
-  int absPanel[4]; // [esp+40h] [ebp-2Ch] BYREF
-  int clipRect[4]; // [esp+50h] [ebp-1Ch] BYREF
-
-  (*((void (__cdecl **)(vgui::Panel *, int *, int *, int *, int *))panel->_vptr_Panel + 57))(
-    panel,
-    inset,
-    &inset[1],
-    &inset[2],
-    &inset[3]);
-  if ( !useInsets )
-    *(_OWORD *)inset = 0LL;
-  v3 = (*this->_vptr_SurfaceBase)(this);
-  (*(void (__cdecl **)(int, int *, int *, int *, int *))(*(_DWORD *)v3 + 56))(
-    v3,
-    absThis,
-    &absThis[1],
-    &absThis[2],
-    &absThis[3]);
-  (*((void (__cdecl **)(vgui::Panel *, int *, int *, int *, int *))panel->_vptr_Panel + 14))(
-    panel,
-    absPanel,
-    &absPanel[1],
-    &absPanel[2],
-    &absPanel[3]);
-  (*((void (__cdecl **)(vgui::Panel *, int *, int *, int *, int *))panel->_vptr_Panel + 15))(
-    panel,
-    clipRect,
-    &clipRect[1],
-    &clipRect[2],
-    &clipRect[3]);
-}
-
-void vgui::Surface::drawSetTextFont(vgui::Surface *const this, vgui::Font *font)
-{
-  if ( font )
-    (*((void (__cdecl **)(vgui::BaseFontPlat *, vgui::SurfacePlat *))font->_plat->_vptr_BaseFontPlat + 7))(
-      font->_plat,
-      this->_plat);
-}
-
-bool vgui::Surface::hasFocus(vgui::Surface *const this)
-{
-  return 1;
-}
-
-int vgui::Surface::getModeInfoCount(vgui::Surface *const this)
-{
-  (*((void (__cdecl **)(vgui::Surface *const))this->_vptr_SurfaceBase + 2))(this);
-  (*((void (__cdecl **)(vgui::Surface *const, int, int, int))this->_vptr_SurfaceBase + 17))(this, 640, 480, 16);
-  (*((void (__cdecl **)(vgui::Surface *const, int, int, int))this->_vptr_SurfaceBase + 17))(this, 800, 600, 16);
-  return vgui::SurfaceBase::getModeInfoCount(this);
-}
-
-void vgui::Surface::drawSetTextureRGBA(vgui::Surface *const this, int id, const char *rgba, int wide, int tall)
-{
-  int v5; // eax
-  int v6; // ebx
-
-  if ( !staticTextureCurrent || id != staticTextureCurrent->_id )
-  {
-    if ( staticTextureCount <= 0 )
-      goto LABEL_9;
-    v5 = 0;
-    if ( id != staticTexture[0]._id )
-    {
-      while ( ++v5 != staticTextureCount )
-      {
-        if ( id == staticTexture[v5]._id )
-          return;
-      }
-      if ( staticTextureCount <= 127 )
-      {
-LABEL_9:
-        v6 = staticTextureCount++;
-        staticTexture[v6]._id = id;
-      }
-    }
-  }
-}
-
-void vgui::Surface::setCursor(vgui::Surface *const this, vgui::Cursor *cursor)
-{
-  vgui::ImagePanel *v2; // eax
-  void (__cdecl *v3)(vgui::ImagePanel *, int); // edi
-  int v4; // eax
-
-  this->_currentCursor = cursor;
-  v2 = this->_emulatedCursor;
-  if ( cursor )
-  {
-    v3 = (void (__cdecl *)(vgui::ImagePanel *, int))*((_DWORD *)v2->_vptr_Panel + 127);
-    v4 = (*((int (__cdecl **)(vgui::Cursor *))cursor->_vptr_Cursor + 2))(cursor);
-    v3(this->_emulatedCursor, v4);
-    (*((void (__cdecl **)(vgui::Cursor *))cursor->_vptr_Cursor + 3))(cursor);
+    _emulatedCursor->setImage(cursor->getBitmap());
+    cursor->getDefaultCursor();
   }
   else
   {
-    (*((void (__cdecl **)(vgui::ImagePanel *, _DWORD))v2->_vptr_Panel + 127))(v2, 0);
+    _emulatedCursor->setImage(nullptr);
   }
 }
 
-bool vgui::Surface::setFullscreenMode(vgui::Surface *const this, int wide, int tall, int bpp)
+bool vgui::Surface::setFullscreenMode(int wide, int tall, int bpp)
 {
-  vgui::SurfacePlat *v4; // edx
-  bool v5; // bl
-
-  v4 = this->_plat;
-  if ( !v4->isFullscreen
-    || v4->fullscreenInfo[0] != wide
-    || v4->fullscreenInfo[1] != tall
-    || (v5 = 1, v4->fullscreenInfo[2] != bpp) )
+  if (!_plat->isFullscreen
+    || _plat->fullscreenInfo[0] != wide
+    || _plat->fullscreenInfo[1] != tall
+    || _plat->fullscreenInfo[2] != bpp)
   {
-    v5 = 0;
-    if ( !this->_modeInfoDar._count )
-      (*((void (__cdecl **)(vgui::Surface *const))this->_vptr_SurfaceBase + 3))(this);
+    if (_modeInfoDar.getCount() == 0)
+      getModeInfoCount();
+
+    return false;
   }
-  return v5;
+
+  return true;
 }
 
