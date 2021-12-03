@@ -1,5 +1,7 @@
-#include <VGUI_Panel.h>
+#include <cmath>
+#include <cstdio>
 
+#include <VGUI_Panel.h>
 #include <VGUI_SurfaceBase.h>
 #include <VGUI_App.h>
 #include <VGUI_InputSignal.h>
@@ -9,7 +11,6 @@
 #include <VGUI_FocusChangeSignal.h>
 #include <VGUI_Border.h>
 
-#include <cmath>
 
 void vgui::Panel::setPos(int x, int y)
 {
@@ -670,7 +671,7 @@ void vgui::Panel::getPersistanceText(char* buf, int bufLen)
   int wide, tall;
 
   getBounds(x, y, wide, tall);
-  sprintf(buf, "->setBounds(%d,%d,%d,%d);\n", x, y, wide, tall);
+  std::sprintf(buf, "->setBounds(%d,%d,%d,%d);\n", x, y, wide, tall);
 }
 
 void vgui::Panel::invalidateLayout(bool layoutNow)

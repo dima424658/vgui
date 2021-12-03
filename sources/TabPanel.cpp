@@ -7,7 +7,7 @@ namespace
   class FooTabAreaBorder : public vgui::Border
   {
   public:
-    void FooTabAreaBorder::paintBorder(vgui::Panel* panel)
+    void paintBorder(vgui::Panel* panel)
     {
       int wide, tall;
       panel->getSize(wide, tall);
@@ -20,7 +20,7 @@ namespace
   class FooClientBorder : public vgui::Border
   {
   public:
-    void FooClientBorder::paintBorder(vgui::Panel* panel)
+    void paintBorder(vgui::Panel* panel)
     {
       int wide, tall;
       panel->getSize(wide, tall);

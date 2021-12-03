@@ -1,4 +1,6 @@
 #include <ctime>
+#include <cstring>
+#include <cstdio>
 
 #include <VGUI_Panel.h>
 #include <VGUI_TaskBar.h>
@@ -26,15 +28,15 @@ namespace
       char buf[50];
 
       if (_hour > 12)
-        sprintf(buf, "%d:%.2d:%.2d PM", _hour - 12, _minute, _second);
+        std::sprintf(buf, "%d:%.2d:%.2d PM", _hour - 12, _minute, _second);
       else
-        sprintf(buf, "%d:%.2d:%.2d AM", _hour, _minute, _second);
+        std::sprintf(buf, "%d:%.2d:%.2d AM", _hour, _minute, _second);
 
       paintBackground();
 
       drawSetTextFont(vgui::Scheme::SchemeFont::sf_primary1);
       drawSetTextColor(vgui::Scheme::SchemeColor::sc_black);
-      drawPrintText(0, 0, buf, strlen(buf));
+      drawPrintText(0, 0, buf, std::strlen(buf));
     }
 
     void ticked()

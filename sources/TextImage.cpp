@@ -298,7 +298,7 @@ void vgui::TextImage::paint(vgui::Panel* panel)
 
 void vgui::TextImage::setText(const char* text)
 {
-  setText(strlen(text) + 1, text);
+  setText(std::strlen(text) + 1, text);
 }
 
 void vgui::TextImage::setText(int textBufferLen, const char* text)

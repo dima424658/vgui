@@ -35,3 +35,5 @@ vgui.vcxproj*
 *.exe
 *.out
 *.app
+
+[bB]uild

@@ -1,4 +1,5 @@
 #include <cstring>
+#include <algorithm>
 
 #include <VGUI_Font.h>
 #include <VGUI_Dar.h>
@@ -60,8 +61,11 @@ void vgui::Font::getCharABCwide(int ch, int& a, int& b, int& c)
     _plat->getCharABCwide(ch, a, b, c);
 }
 
-static vgui::Dar<vgui::BaseFontPlat*> staticFontPlatDar;
-static int staticFontId = -1;
+namespace vgui
+{
+    extern vgui::Dar<vgui::BaseFontPlat*> staticFontPlatDar;
+    extern int staticFontId;
+}
 
 void vgui::Font::init(const char* name, void* pFileData, int fileDataLen, int tall, int wide, float rotation, int weight, bool italic, bool underline, bool strikeout, bool symbol)
 {
@@ -85,7 +89,7 @@ void vgui::Font::init(const char* name, void* pFileData, int fileDataLen, int ta
         if (LoadVFontDataFrom32BitTGA(&memStream, pData))
         {
             auto v25 = new char[strlen(name) + 1];
-            
+
             v15[260]._vptr_BaseFontPlat = (int (**)(...))v25;
 
             if (v25)
@@ -112,7 +116,7 @@ void vgui::Font::init(const char* name, void* pFileData, int fileDataLen, int ta
 
         if (!_plat)
         {
-            _plat = new vgui::FontPlat{name, tall, wide, rotation, weight, italic, underline, strikeout, symbol};
+            _plat = new vgui::FontPlat{ name, tall, wide, rotation, weight, italic, underline, strikeout, symbol };
             staticFontPlatDar.addElement(_plat);
             _id = ++staticFontId;
         }

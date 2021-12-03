@@ -1,3 +1,8 @@
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <cstdarg>
+
 #include <VGUI_Label.h>
 #include <VGUI_TextImage.h>
 
@@ -250,13 +255,13 @@ void vgui::Label::setText(const char* format, ...)
 {
   constexpr int bufSz = 4096;
   char buf[bufSz];
-  va_list __varargs;
+  std::va_list __varargs;
 
   va_start(__varargs, format);
-  vsnprintf(buf, bufSz, format, __varargs);
+  std::vsnprintf(buf, bufSz, format, __varargs);
   buf[bufSz - 1] = '\0';
 
-  setText(strlen(buf) + 1, buf);
+  setText(std::strlen(buf) + 1, buf);
 }
 
 void vgui::Label::init(int textBufferLen, const char* text, bool textFitted)
@@ -274,26 +279,25 @@ void vgui::Label::init(int textBufferLen, const char* text, bool textFitted)
 }
 
 vgui::Label::Label(int textBufferLen, const char* text, int x, int y, int wide, int tall)
-  : vgui::Panel{x, y, wide, tall}
+  : vgui::Panel{ x, y, wide, tall }
 {
   init(textBufferLen, text, false);
 }
 
 vgui::Label::Label(const char* text, int x, int y, int wide, int tall)
-  : vgui::Panel{x, y, wide, tall}
+  : vgui::Panel{ x, y, wide, tall }
 {
-  init(strlen(text) + 1, text, false);
+  init(std::strlen(text) + 1, text, false);
 }
 
 vgui::Label::Label(const char* text, int x, int y)
-  : vgui::Panel{x, y, 10, 10}
+  : vgui::Panel{ x, y, 10, 10 }
 {
-  init(strlen(text) + 1, text, false);
+  init(std::strlen(text) + 1, text, false);
 }
 
-void vgui::Label::Label(const char* text)
-  : vgui::Panel{0, 0, 10, 10}
+vgui::Label::Label(const char* text)
+  : vgui::Panel{ 0, 0, 10, 10 }
 {
-  init(strlen(text) + 1, text, false);
+  init(std::strlen(text) + 1, text, false);
 }
-

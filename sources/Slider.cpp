@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include <VGUI_Slider.h>
 #include <VGUI_IntChangeSignal.h>
 #include <VGUI_InputSignal.h>
@@ -99,7 +101,7 @@ void vgui::Slider::recomputeValueFromNobPos()
     v6 = _value - _range[0];
   }
 
-  _value = _range[1] = std::min(_range[1], v6 + _range[0] + 0.5);
+  _value = _range[1] = std::min(_range[1], v6 + _range[0]); // + 0.5 ???
 }
 
 bool vgui::Slider::hasFullRange()

@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <cstdarg>
 
 #include <VGUI_TextGrid.h>
 
@@ -58,7 +59,7 @@ void vgui::TextGrid::paintBackground()
 
 int vgui::TextGrid::printf(const char* format, ...)
 {
-  va_list va;
+  std::va_list va;
   va_start(va, format);
 
   return vprintf(format, va);
@@ -105,8 +106,8 @@ void vgui::TextGrid::newLine()
         std::copy(ptrGrid, ptrGrid + szGrid, fromGrid);
       }
 
-      auto szGrid = 7 * _gridSize[0];
-      auto ptrGrid = &_grid[7 * _gridSize[0] * _xy[1]];
+      szGrid = 7 * _gridSize[0];
+      ptrGrid = &_grid[7 * _gridSize[0] * _xy[1]];
       std::fill(ptrGrid, ptrGrid + szGrid, '\0');
     }
     _xy[0] = 0;

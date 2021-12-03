@@ -1,7 +1,21 @@
+#include <cstdio>
+#include <cstring>
+
 #include <VGUI_SurfaceBase.h>
 #include <VGUI_ImagePanel.h>
 #include <VGUI_Cursor.h>
 #include <VGUI_App.h>
+
+namespace
+{
+  class FakeImagePanel : public vgui::ImagePanel
+  {
+    bool isWithin(int x, int y)
+    {
+      return false;
+    }
+  };
+}
 
 void vgui::SurfaceBase::requestSwap()
 {
@@ -51,7 +65,7 @@ bool vgui::SurfaceBase::getModeInfo(int index, int& wide, int& tall, int& bpp)
 
   if (index >= 0 && index < _modeInfoDar.getCount())
   {
-    sscanf(_modeInfoDar[index], "%dx%dx%d", wide, tall, bpp);
+    std::sscanf(_modeInfoDar[index], "%dx%dx%d", wide, tall, bpp);
     result = true;
   }
 
@@ -62,21 +76,11 @@ void vgui::SurfaceBase::addModeInfo(int wide, int tall, int bpp)
 {
   char* buf2, buf[256];
 
-  sprintf(buf, "%dx%dx%d", wide, tall, bpp);
-  buf2 = strdup(buf);
+  std::sprintf(buf, "%dx%dx%d", wide, tall, bpp);
+  buf2 = new char[std::strlen(buf)];
+  std::strncpy(buf2, buf, 256);
 
   _modeInfoDar.addElement(buf2);
-}
-
-namespace
-{
-  class FakeImagePanel : public vgui::ImagePanel
-  {
-    bool isWithin(int x, int y)
-    {
-      return false;
-    }
-  };
 }
 
 vgui::SurfaceBase::SurfaceBase(vgui::Panel* embeddedPanel)

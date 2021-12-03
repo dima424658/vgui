@@ -169,7 +169,7 @@ double vgui::DataInputStream::readDouble(bool& success)
 
 void vgui::DataInputStream::readLine(char* buf, int bufLen, bool& success)
 {
-  bool success = true;
+  success = true;
   uchar ch_0 = '\0';
 
   if (_is)

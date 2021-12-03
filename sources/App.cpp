@@ -1,8 +1,9 @@
 #include <VGUI_App.h>
-
 #include <VGUI_SurfaceBase.h>
 #include <VGUI_Panel.h>
 #include <VGUI_TickSignal.h>
+
+#include <sys/time.h>
 
 vgui::App::App()
 {
@@ -10,7 +11,7 @@ vgui::App::App()
 }
 
 vgui::App::App(bool externalMain)
-    : _externalMain{externalMain}
+  : _externalMain{ externalMain }
 {
   init();
 }
@@ -34,7 +35,7 @@ void vgui::App::stop()
   _running = false;
 }
 
-void vgui::App::surfaceBaseDeleted(vgui::SurfaceBase *surfaceBase)
+void vgui::App::surfaceBaseDeleted(vgui::SurfaceBase* surfaceBase)
 {
   _surfaceBaseDar.removeElement(surfaceBase);
 
@@ -43,7 +44,7 @@ void vgui::App::surfaceBaseDeleted(vgui::SurfaceBase *surfaceBase)
   _keyFocus = nullptr;
 }
 
-void vgui::App::internalCursorMoved(int x, int y, vgui::SurfaceBase *surfaceBase)
+void vgui::App::internalCursorMoved(int x, int y, vgui::SurfaceBase* surfaceBase)
 {
   surfaceBase->getPanel()->localToScreen(x, y);
 
@@ -55,27 +56,27 @@ void vgui::App::internalCursorMoved(int x, int y, vgui::SurfaceBase *surfaceBase
   }
 }
 
-bool vgui::App::wasMousePressed(vgui::MouseCode code, vgui::Panel *panel)
+bool vgui::App::wasMousePressed(vgui::MouseCode code, vgui::Panel* panel)
 {
   return _mousePressed[code];
 }
 
-bool vgui::App::wasMouseDoublePressed(vgui::MouseCode code, vgui::Panel *panel)
+bool vgui::App::wasMouseDoublePressed(vgui::MouseCode code, vgui::Panel* panel)
 {
   return _mouseDoublePressed[code];
 }
 
-bool vgui::App::isMouseDown(vgui::MouseCode code, vgui::Panel *panel)
+bool vgui::App::isMouseDown(vgui::MouseCode code, vgui::Panel* panel)
 {
   return _mouseDown[code];
 }
 
-bool vgui::App::wasMouseReleased(vgui::MouseCode code, vgui::Panel *panel)
+bool vgui::App::wasMouseReleased(vgui::MouseCode code, vgui::Panel* panel)
 {
   return _mouseReleased[code];
 }
 
-bool vgui::App::wasKeyPressed(vgui::KeyCode code, vgui::Panel *panel)
+bool vgui::App::wasKeyPressed(vgui::KeyCode code, vgui::Panel* panel)
 {
   bool result = false;
 
@@ -85,7 +86,7 @@ bool vgui::App::wasKeyPressed(vgui::KeyCode code, vgui::Panel *panel)
   return result;
 }
 
-bool vgui::App::isKeyDown(vgui::KeyCode code, vgui::Panel *panel)
+bool vgui::App::isKeyDown(vgui::KeyCode code, vgui::Panel* panel)
 {
   bool result = false;
 
@@ -94,7 +95,7 @@ bool vgui::App::isKeyDown(vgui::KeyCode code, vgui::Panel *panel)
   return result;
 }
 
-bool vgui::App::wasKeyTyped(vgui::KeyCode code, vgui::Panel *panel)
+bool vgui::App::wasKeyTyped(vgui::KeyCode code, vgui::Panel* panel)
 {
   bool result = false;
 
@@ -103,7 +104,7 @@ bool vgui::App::wasKeyTyped(vgui::KeyCode code, vgui::Panel *panel)
   return result;
 }
 
-bool vgui::App::wasKeyReleased(vgui::KeyCode code, vgui::Panel *panel)
+bool vgui::App::wasKeyReleased(vgui::KeyCode code, vgui::Panel* panel)
 {
   bool result = false;
 
@@ -112,7 +113,7 @@ bool vgui::App::wasKeyReleased(vgui::KeyCode code, vgui::Panel *panel)
   return result;
 }
 
-void vgui::App::setMouseCapture(vgui::Panel *panel)
+void vgui::App::setMouseCapture(vgui::Panel* panel)
 {
   if (panel)
   {
@@ -132,7 +133,7 @@ void vgui::App::setMouseCapture(vgui::Panel *panel)
   _mouseCapture = nullptr;
 }
 
-void vgui::App::requestFocus(vgui::Panel *panel)
+void vgui::App::requestFocus(vgui::Panel* panel)
 {
   _wantedKeyFocus = panel;
 }
@@ -149,7 +150,7 @@ void vgui::App::repaintAll()
   }
 }
 
-void vgui::App::setScheme(vgui::Scheme *scheme)
+void vgui::App::setScheme(vgui::Scheme* scheme)
 {
   if (scheme)
   {
@@ -176,7 +177,7 @@ char vgui::App::getKeyCodeChar(vgui::KeyCode code, bool shifted)
     return 127;
 }
 
-void vgui::App::getKeyCodeText(vgui::KeyCode code, char *buf, int buflen)
+void vgui::App::getKeyCodeText(vgui::KeyCode code, char* buf, int buflen)
 {
   if (buf && buflen > 0)
   {
@@ -187,7 +188,7 @@ void vgui::App::getKeyCodeText(vgui::KeyCode code, char *buf, int buflen)
   }
 }
 
-void vgui::App::setMouseArena(vgui::Panel *panel)
+void vgui::App::setMouseArena(vgui::Panel* panel)
 {
   _mouseArenaPanel = panel;
 }
@@ -198,7 +199,7 @@ void vgui::App::setMouseArena(int x0, int y0, int x1, int y1, bool enabled)
   internalSetMouseArena(x0, y0, x1, y1, enabled);
 }
 
-void vgui::App::setCursorOveride(vgui::Cursor *cursor)
+void vgui::App::setCursorOveride(vgui::Cursor* cursor)
 {
   _cursorOveride = cursor;
 }
@@ -208,7 +209,7 @@ void vgui::App::setMinimumTickMillisInterval(int interval)
   _minimumTickMillisInterval = interval;
 }
 
-void vgui::App::setMouseFocus(vgui::Panel *newMouseFocus)
+void vgui::App::setMouseFocus(vgui::Panel* newMouseFocus)
 {
   if (_mouseFocus != newMouseFocus)
   {
@@ -264,6 +265,8 @@ void vgui::App::init()
   memset(_keyReleased, 0, sizeof(_keyReleased));
 }
 
+namespace vgui { void Font_Reset(); }
+
 void vgui::App::reset()
 {
   _mouseArenaPanel = nullptr;
@@ -279,7 +282,7 @@ void vgui::App::reset()
   setScheme(new vgui::Scheme);
 }
 
-void vgui::App::updateMouseFocus(int x, int y, vgui::SurfaceBase *surfaceBase)
+void vgui::App::updateMouseFocus(int x, int y, vgui::SurfaceBase* surfaceBase)
 {
   if (_mouseCapture)
   {
@@ -296,7 +299,7 @@ void vgui::App::updateMouseFocus(int x, int y, vgui::SurfaceBase *surfaceBase)
   }
 }
 
-void vgui::App::internalMousePressed(vgui::MouseCode code, vgui::SurfaceBase *surfaceBase)
+void vgui::App::internalMousePressed(vgui::MouseCode code, vgui::SurfaceBase* surfaceBase)
 {
   _mousePressed[code] = true;
   _mouseDown[code] = true;
@@ -305,7 +308,7 @@ void vgui::App::internalMousePressed(vgui::MouseCode code, vgui::SurfaceBase *su
     _mouseFocus->internalMousePressed(code);
 }
 
-void vgui::App::internalMouseDoublePressed(vgui::MouseCode code, vgui::SurfaceBase *surfaceBase)
+void vgui::App::internalMouseDoublePressed(vgui::MouseCode code, vgui::SurfaceBase* surfaceBase)
 {
   _mouseDoublePressed[code] = true;
 
@@ -313,7 +316,7 @@ void vgui::App::internalMouseDoublePressed(vgui::MouseCode code, vgui::SurfaceBa
     _mouseFocus->internalMouseDoublePressed(code);
 }
 
-void vgui::App::internalMouseReleased(vgui::MouseCode code, vgui::SurfaceBase *surfaceBase)
+void vgui::App::internalMouseReleased(vgui::MouseCode code, vgui::SurfaceBase* surfaceBase)
 {
   _mouseReleased[code] = true;
   _mouseDown[code] = false;
@@ -322,13 +325,13 @@ void vgui::App::internalMouseReleased(vgui::MouseCode code, vgui::SurfaceBase *s
     _mouseFocus->internalMouseReleased(code);
 }
 
-void vgui::App::internalMouseWheeled(int delta, vgui::SurfaceBase *surfaceBase)
+void vgui::App::internalMouseWheeled(int delta, vgui::SurfaceBase* surfaceBase)
 {
   if (!_buildMode && _mouseFocus)
     _mouseFocus->internalMouseWheeled(delta);
 }
 
-void vgui::App::internalKeyPressed(vgui::KeyCode code, vgui::SurfaceBase *surfaceBase)
+void vgui::App::internalKeyPressed(vgui::KeyCode code, vgui::SurfaceBase* surfaceBase)
 {
   if (code >= vgui::KeyCode::KEY_0 && code <= vgui::KeyCode::KEY_F12)
   {
@@ -340,7 +343,7 @@ void vgui::App::internalKeyPressed(vgui::KeyCode code, vgui::SurfaceBase *surfac
   }
 }
 
-void vgui::App::internalKeyTyped(vgui::KeyCode code, vgui::SurfaceBase *surfaceBase)
+void vgui::App::internalKeyTyped(vgui::KeyCode code, vgui::SurfaceBase* surfaceBase)
 {
   if (code >= vgui::KeyCode::KEY_0 && code <= vgui::KeyCode::KEY_F12)
   {
@@ -351,7 +354,7 @@ void vgui::App::internalKeyTyped(vgui::KeyCode code, vgui::SurfaceBase *surfaceB
   }
 }
 
-void vgui::App::internalKeyReleased(vgui::KeyCode code, vgui::SurfaceBase *surfaceBase)
+void vgui::App::internalKeyReleased(vgui::KeyCode code, vgui::SurfaceBase* surfaceBase)
 {
   if (code >= vgui::KeyCode::KEY_0 && code <= vgui::KeyCode::KEY_F12)
   {
@@ -425,7 +428,7 @@ void vgui::App::internalTick()
   memset(_keyPressed, 0, sizeof(_keyPressed)); // ??? use std
   memset(_keyTyped, 0, sizeof(_keyTyped));
   memset(_keyReleased, 0, sizeof(_keyReleased));
-  
+
   auto surface_idx = _surfaceBaseDar.getCount();
   for (auto i = 0; i < _surfaceBaseDar.getCount(); ++i)
     if (_surfaceBaseDar[i]->hasFocus())
@@ -474,24 +477,24 @@ void vgui::App::internalTick()
       _mouseArenaPanel->getAbsExtents(x0, y0, x1, y1);
 
       internalSetMouseArena(x + x0, y + y0,
-                            x + x1, y + y1, true);
+        x + x1, y + y1, true);
     }
   }
 
   _nextTickMillis = _minimumTickMillisInterval + getTimeMillis();
 }
 
-void vgui::App::surfaceBaseCreated(vgui::SurfaceBase *surfaceBase)
+void vgui::App::surfaceBaseCreated(vgui::SurfaceBase* surfaceBase)
 {
   _surfaceBaseDar.addElement(surfaceBase);
 }
 
-void vgui::App::addTickSignal(vgui::TickSignal *s)
+void vgui::App::addTickSignal(vgui::TickSignal* s)
 {
   _tickSignalDar.addElement(s);
 }
 
-void vgui::App::getCursorPos(int& x,int& y)
+void vgui::App::getCursorPos(int& x, int& y)
 {
   if (_surfaceBaseDar.getCount() > 0)
     _surfaceBaseDar[0]->GetMousePos(x, y);
@@ -516,27 +519,27 @@ int vgui::App::getClipboardTextCount()
   return 0;
 }
 
-int vgui::App::getClipboardText(int offset, char *buf, int bufLen)
+int vgui::App::getClipboardText(int offset, char* buf, int bufLen)
 {
   return 0;
 }
 
-bool vgui::App::setRegistryString(const char *key, const char *value)
+bool vgui::App::setRegistryString(const char* key, const char* value)
 {
   return false;
 }
 
-bool vgui::App::getRegistryString(const char *key, char *value, int valueLen)
+bool vgui::App::getRegistryString(const char* key, char* value, int valueLen)
 {
   return false;
 }
 
-bool vgui::App::setRegistryInteger(const char *key, int value)
+bool vgui::App::setRegistryInteger(const char* key, int value)
 {
   return false;
 }
 
-bool vgui::App::getRegistryInteger(const char *key, int& value)
+bool vgui::App::getRegistryInteger(const char* key, int& value)
 {
   return false;
 }

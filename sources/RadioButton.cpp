@@ -52,8 +52,6 @@ void vgui::RadioButton::paintBackground()
 vgui::RadioButton::RadioButton(const char* text, int x, int y, int wide, int tall)
   : vgui::ToggleButton{ text, x, y, wide, tall }
 {
-  int wide, tall;
-
   setTextAlignment(vgui::Label::Alignment::a_east);
   setImage(new FooRadioImage{ this });
 

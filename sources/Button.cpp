@@ -1,3 +1,5 @@
+#include <bit>
+
 #include <VGUI_Button.h>
 
 #include <VGUI_ButtonGroup.h>
@@ -5,7 +7,6 @@
 #include <VGUI_ActionSignal.h>
 #include <VGUI_InputSignal.h>
 
-#include <bit>
 
 namespace
 {
@@ -185,7 +186,7 @@ void vgui::Button::setMouseClickEnabled(vgui::MouseCode code, bool state)
   if (state)
     _mouseClickMask |= 2 << code;
   else
-    _mouseClickMask &= std::rotl(-2, code + 1);
+    _mouseClickMask &= std::rotl(2u, code + 1);
 }
 
 void vgui::Button::addActionSignal(vgui::ActionSignal* s)

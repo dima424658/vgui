@@ -1,3 +1,6 @@
+#include <cstdio>
+#include <cstring>
+
 #include <VGUI_IntLabel.h>
 
 vgui::IntLabel::IntLabel(int value, int x, int y, int wide, int tall)
@@ -20,11 +23,11 @@ void vgui::IntLabel::paintBackground()
 {
 	char buf[50];
 
-	sprintf(buf, "%d", _value);
+	std::sprintf(buf, "%d", _value);
 	vgui::Panel::paintBackground();
 	drawSetColor(Scheme::SchemeColor::sc_black);
 	drawSetTextColor(Scheme::SchemeColor::sc_black);
-	drawPrintText(0, 0, buf, strlen(buf));
+	drawPrintText(0, 0, buf, std::strlen(buf));
 }
 
 void vgui::IntLabel::setValue(int value)

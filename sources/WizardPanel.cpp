@@ -4,8 +4,6 @@
 #include <VGUI_Button.h>
 #include <VGUI_App.h>
 
-#include "handlers/FooBackNextHandler.h"
-
 namespace
 {
   class FooBackHandler : public vgui::ActionSignal
@@ -248,25 +246,13 @@ void vgui::WizardPanel::setCurrentWizardPage(vgui::WizardPanel::WizardPage* curr
   invalidateLayout(false);
 }
 
-void vgui::WizardPanel::addFinishedActionSignal(vgui::ActionSignal* s)
-{
-  _finishedButton->addActionSignal(s);
-}
+void vgui::WizardPanel::addFinishedActionSignal(vgui::ActionSignal* s) { _finishedButton->addActionSignal(s); }
 
-void vgui::WizardPanel::addCancelledActionSignal(vgui::ActionSignal* s)
-{
-  _cancelButton->addActionSignal(s);
-}
+void vgui::WizardPanel::addCancelledActionSignal(vgui::ActionSignal* s) { _cancelButton->addActionSignal(s); }
 
-void vgui::WizardPanel::fireFinishedActionSignal()
-{
-  _finishedButton->fireActionSignal()
-}
+void vgui::WizardPanel::fireFinishedActionSignal() { _finishedButton->fireActionSignal(); }
 
-void vgui::WizardPanel::fireCancelledActionSignal()
-{
-  _cancelButton->fireActionSignal();
-}
+void vgui::WizardPanel::fireCancelledActionSignal() { _cancelButton->fireActionSignal(); }
 
 void vgui::WizardPanel::firePageChangedActionSignal()
 {
@@ -391,11 +377,11 @@ vgui::WizardPanel::WizardPanel(int x, int y, int wide, int tall)
 
   _backButton = new vgui::Button{ "back", 20, 100 };
   _backButton->setParent(this);
-  _backButton->addActionSignal(new FooBackHandler{this});
+  _backButton->addActionSignal(new FooBackHandler{ this });
 
   _nextButton = new vgui::Button{ "next", 80, 100 };
   _nextButton->setParent(this);
-  _nextButton->addActionSignal(new FooNextHandler{this});
+  _nextButton->addActionSignal(new FooNextHandler{ this });
 
   _finishedButton = new vgui::Button{ "finished", 120, 100 };
   _finishedButton->setParent(this);

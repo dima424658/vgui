@@ -1,5 +1,6 @@
-#include <VGUI_TreeFolder.h>
+#include <algorithm>
 
+#include <VGUI_TreeFolder.h>
 #include <VGUI_Label.h>
 #include <VGUI_Layout.h>
 #include <VGUI_InputSignal.h>
@@ -165,10 +166,10 @@ void vgui::TreeFolder::init(const char* name)
   _opened = false;
 
   auto label = new vgui::Label{ name, 0, 0 };
-  label->addInputSignal(new handlers::FooTreeFolderDefaultHandler{ this });
+  label->addInputSignal(new FooTreeFolderDefaultHandler{ this });
   label->setParent(this);
 
-  setLayout(new handlers::FooTabFolderVerticalLayout{ 54, 0 }); // ???
+  setLayout(new FooTabFolderVerticalLayout{ 54, 0 }); // ???
 }
 
 vgui::TreeFolder::TreeFolder(const char* name)

@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <VGUI_ScrollPanel.h>
 #include <VGUI_ScrollBar.h>
 

@@ -1,10 +1,13 @@
+#include <cstring>
+#include <cstdio>
+#include <algorithm>
+
 #include <VGUI_TextEntry.h>
 #include <VGUI_App.h>
 #include <VGUI_Font.h>
 #include <VGUI_ActionSignal.h>
 #include <VGUI_FocusChangeSignal.h>
 #include <VGUI_InputSignal.h>
-
 
 namespace
 {
@@ -381,7 +384,7 @@ vgui::TextEntry::TextEntry(const char* text, int x, int y, int wide, int tall)
   _select{ -1, -1 },
   _font{ nullptr }
 {
-  int textLen = strlen(text);
+  int textLen = std::strlen(text);
   setText(text, textLen);
   selectCheck();
   _cursorPos = _lineDar.getCount();

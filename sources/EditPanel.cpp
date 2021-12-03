@@ -1,4 +1,6 @@
 #include <algorithm>
+#include <cstdio>
+#include <cstdarg>
 
 #include <VGUI_EditPanel.h>
 #include <VGUI_App.h>
@@ -288,10 +290,10 @@ void vgui::EditPanel::setFont(vgui::Font* font)
 void vgui::EditPanel::doCursorPrintf(char* format, ...)
 {
   char buf[8192];
-  va_list __varargs;
+  std::va_list __varargs;
 
   va_start(__varargs, format);
-  vsprintf(buf, format, __varargs);
+  std::vsprintf(buf, format, __varargs);
 
   for (auto i = 0; i < sizeof(buf) / sizeof(buf[0]); ++i)
   {
