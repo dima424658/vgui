@@ -1,12 +1,76 @@
-#include <VGUI_TaskBar.h>
+#include <ctime>
 
+#include <VGUI_Panel.h>
+#include <VGUI_TaskBar.h>
 #include <VGUI_RaisedBorder.h>
 #include <VGUI_LoweredBorder.h>
 #include <VGUI_Button.h>
 #include <VGUI_Frame.h>
+#include <VGUI_App.h>
+#include <VGUI_TickSignal.h>
+#include <VGUI_ActionSignal.h>
+#include <VGUI_FrameSignal.h>
+#include <VGUI_FocusChangeSignal.h>
 
-#include "handlers/FooClock.h"
-#include "handlers/FooTaskBarButtonHandler.h"
+namespace
+{
+  class FooClock : public vgui::Panel, public vgui::TickSignal
+  {
+  private:
+    int _hour, _minute, _second;
+  public:
+    FooClock(int x, int y, int wide, int tall) : vgui::Panel{ x, y, wide, tall } { getApp()->addTickSignal(this); }
+
+    void paintBackground()
+    {
+      char buf[50];
+
+      if (_hour > 12)
+        sprintf(buf, "%d:%.2d:%.2d PM", _hour - 12, _minute, _second);
+      else
+        sprintf(buf, "%d:%.2d:%.2d AM", _hour, _minute, _second);
+
+      paintBackground();
+
+      drawSetTextFont(vgui::Scheme::SchemeFont::sf_primary1);
+      drawSetTextColor(vgui::Scheme::SchemeColor::sc_black);
+      drawPrintText(0, 0, buf, strlen(buf));
+    }
+
+    void ticked()
+    {
+      auto aclock = std::time(nullptr);
+
+      auto lc = localtime(&aclock);
+      if (_hour != lc->tm_hour || _minute != lc->tm_min || _second != lc->tm_sec)
+      {
+        _second = lc->tm_sec;
+        _hour = lc->tm_hour;
+        _minute = lc->tm_min;
+        repaint();
+      }
+    }
+  };
+
+  class FooTaskBarButtonHandler : public vgui::ActionSignal, public vgui::FrameSignal, public vgui::FocusChangeSignal
+  {
+  private:
+    vgui::Frame* _frame;
+    vgui::Button* _button;
+
+  public:
+    FooTaskBarButtonHandler(vgui::Frame* frame, vgui::Button* button) : _frame{ frame }, _button{ button } {}
+    void closing(vgui::Frame* frame) {}
+    void focusChanged(bool lost, vgui::Panel* panel) { _button->setSelected(!lost); }
+    void actionPerformed(vgui::Panel* panel) { _frame->setVisible(true);_frame->requestFocus(); }
+
+    void minimizing(vgui::Frame* frame, bool toTray)
+    {
+      _frame->setVisible(false);
+      _frame->getApp()->requestFocus(nullptr);
+    }
+  };
+}
 
 void vgui::TaskBar::performLayout()
 {
@@ -41,7 +105,7 @@ void vgui::TaskBar::addFrame(vgui::Frame* frame)
   button->addActionSignal(handler);
   frame->addFrameSignal(handler);
   frame->addFocusChangeSignal(handler);
-  
+
   _taskButtonDar.addElement(button);
 
   invalidateLayout(false);

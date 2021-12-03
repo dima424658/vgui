@@ -6,14 +6,69 @@
 #include <VGUI_App.h>
 #include <VGUI_MiniApp.h>
 #include <VGUI_Font.h>
+#include <VGUI_MouseCode.h>
 
-#include "handlers/FooHandler.h"
+namespace
+{
+  class FooHandler : public vgui::InputSignal
+  {
+  private:
+    bool _dragging;
+    int _dragStart[2];
+    int _dragOrgPos[2];
+    vgui::DesktopIcon* _desktopIcon;
 
-vgui::DesktopIcon::DesktopIcon(vgui::MiniApp *miniApp, vgui::Image *image)
-    : vgui::Panel{0, 0, 32, 50},
-      _desktop{nullptr},
-      _miniApp{miniApp},
-      _image{image}
+  public:
+    FooHandler(vgui::DesktopIcon* desktopIcon) : _desktopIcon{ desktopIcon } {}
+    void cursorMoved(int x, int y, vgui::Panel* panel)
+    {
+      if (_dragging)
+      {
+        panel->getApp()->getCursorPos(x, y);
+
+        _desktopIcon->setPos(
+          _dragOrgPos[0] + x - _dragStart[0],
+          _dragOrgPos[1] + y - _dragStart[1]);
+
+        auto parent = _desktopIcon->getParent();
+        if (parent)
+          parent->requestFocusPrev();
+      }
+    }
+    void cursorEntered(vgui::Panel* panel) {}
+    void cursorExited(vgui::Panel* panel) {}
+    void mousePressed(vgui::MouseCode code, vgui::Panel* panel)
+    {
+      panel->getApp()->getCursorPos(_dragStart[0], _dragStart[1]);
+      panel->getApp()->setMouseCapture(panel);
+
+      _desktopIcon->getPos(_dragOrgPos[0], _dragOrgPos[1]);
+      _desktopIcon->requestFocus();
+    }
+    void mouseDoublePressed(vgui::MouseCode code, vgui::Panel* panel)
+    {
+      _desktopIcon->doActivate();
+    }
+    void mouseReleased(vgui::MouseCode code, vgui::Panel* panel)
+    {
+      auto app = panel->getApp();
+
+      _dragging = false;
+      app->setMouseCapture(nullptr);
+    }
+    void mouseWheeled(int delta, vgui::Panel* panel) {}
+    void keyPressed(vgui::KeyCode code, vgui::Panel* panel) {}
+    void keyTyped(vgui::KeyCode code, vgui::Panel* panel) {}
+    void keyReleased(vgui::KeyCode code, vgui::Panel* panel) {}
+    void keyFocusTicked(vgui::Panel* panel) {}
+  };
+};
+
+vgui::DesktopIcon::DesktopIcon(vgui::MiniApp* miniApp, vgui::Image* image)
+  : vgui::Panel{ 0, 0, 32, 50 },
+  _desktop{ nullptr },
+  _miniApp{ miniApp },
+  _image{ image }
 {
   int wide;
   int tall;
@@ -24,7 +79,7 @@ vgui::DesktopIcon::DesktopIcon(vgui::MiniApp *miniApp, vgui::Image *image)
     setSize(wide, tall);
   }
 
-  addInputSignal(new handlers::FooHandler);
+  addInputSignal(new FooHandler{this});
 }
 
 void vgui::DesktopIcon::doActivate()
@@ -33,7 +88,7 @@ void vgui::DesktopIcon::doActivate()
     _desktop->iconActivated(this);
 }
 
-void vgui::DesktopIcon::setImage(vgui::Image *image)
+void vgui::DesktopIcon::setImage(vgui::Image* image)
 {
   int wide;
   int tall;
@@ -46,12 +101,12 @@ void vgui::DesktopIcon::setImage(vgui::Image *image)
   }
 }
 
-void vgui::DesktopIcon::setDesktop(vgui::Desktop *desktop)
+void vgui::DesktopIcon::setDesktop(vgui::Desktop* desktop)
 {
   _desktop = desktop;
 }
 
-vgui::MiniApp *vgui::DesktopIcon::getMiniApp()
+vgui::MiniApp* vgui::DesktopIcon::getMiniApp()
 {
   return _miniApp;
 }

@@ -3,10 +3,52 @@
 #include <VGUI_ButtonGroup.h>
 #include <VGUI_ButtonController.h>
 #include <VGUI_ActionSignal.h>
+#include <VGUI_InputSignal.h>
 
 #include <bit>
 
-#include "handlers/FooDefaultButtonController.h"
+namespace
+{
+  class FooDefaultButtonController : public vgui::ButtonController, public vgui::InputSignal
+  {
+  private:
+    vgui::Button* _button;
+  public:
+    FooDefaultButtonController(vgui::Button* button) : _button{ button } {}
+
+    void addSignals(vgui::Button* button) { button->addInputSignal(this); }
+    void removeSignals(vgui::Button* button) { button->removeInputSignal(this); }
+
+    void mouseReleased(vgui::MouseCode code, vgui::Panel* panel)
+    {
+      if (_button->isEnabled() && _button->isMouseClickEnabled(code))
+      {
+        _button->setSelected(false);
+        _button->fireActionSignal();
+        _button->repaint();
+      }
+    }
+
+    void mousePressed(vgui::MouseCode code, vgui::Panel* panel)
+    {
+      if (_button->isEnabled() && _button->isMouseClickEnabled(code))
+      {
+        _button->setSelected(true);
+        _button->repaint();
+      }
+    }
+
+    void cursorMoved(int x, int y, vgui::Panel* panel) {}
+    void cursorEntered(vgui::Panel* panel) {}
+    void cursorExited(vgui::Panel* panel) {}
+    void mouseDoublePressed(vgui::MouseCode code, vgui::Panel* panel) {}
+    void mouseWheeled(int delta, vgui::Panel* panel) {}
+    void keyPressed(vgui::KeyCode code, vgui::Panel* panel) {}
+    void keyTyped(vgui::KeyCode code, vgui::Panel* panel) {}
+    void keyReleased(vgui::KeyCode code, vgui::Panel* panel) {}
+    void keyFocusTicked(vgui::Panel* panel) {}
+  };
+}
 
 vgui::Button::Button(const char* text, int x, int y, int wide, int tall)
   : vgui::Label{ text, x, y, wide, tall }

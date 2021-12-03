@@ -1,7 +1,40 @@
 #include <VGUI_TabPanel.h>
+#include <VGUI_Border.h>
+#include <VGUI_Panel.h>
 
-#include "handlers/FooClientBorder.hpp"
-#include "handlers/FooTabAreaBorder.hpp"
+namespace
+{
+  class FooTabAreaBorder : public vgui::Border
+  {
+  public:
+    void FooTabAreaBorder::paintBorder(vgui::Panel* panel)
+    {
+      int wide, tall;
+      panel->getSize(wide, tall);
+
+      drawSetColor(vgui::Scheme::SchemeColor::sc_white);
+      drawFilledRect(0, tall - 1, wide, tall);
+    }
+  };
+
+  class FooClientBorder : public vgui::Border
+  {
+  public:
+    void FooClientBorder::paintBorder(vgui::Panel* panel)
+    {
+      int wide, tall;
+      panel->getSize(wide, tall);
+
+      drawSetColor(vgui::Scheme::SchemeColor::sc_white);
+      drawFilledRect(0, 0, wide - 1, 1);
+      drawFilledRect(0, 1, 1, tall - 1);
+
+      drawSetColor(vgui::Scheme::SchemeColor::sc_secondary1);
+      drawFilledRect(0, tall - 1, wide, tall);
+      drawFilledRect(wide - 1, 0, wide, tall - 1);
+    }
+  };
+}
 
 void vgui::TabPanel::setSelectedTab(vgui::Panel* tab)
 {
@@ -49,7 +82,7 @@ void vgui::TabPanel::recomputeLayoutTop()
       if (j)
       {
         extra2 = (maxx - x) / j;
-        
+
         for (j += i; j != i; --j)
         {
           _tabArea->getChild(j)->getPreferredSize(ww, tt);
@@ -76,7 +109,7 @@ void vgui::TabPanel::recomputeLayoutTop()
   _tabArea->getChild(0)->getSize(wide, tall);
   _tabArea->setBounds(0, 5, paintWide, tall - miny);
   _tabArea->getSize(wide, tall);
-  
+
   _clientArea->setBounds(0, tall + 4, paintWide, paintTall - tall - 5);
   _clientArea->getSize(wide, tall);
   for (auto i = 0; i < _clientArea->getChildCount(); ++i)

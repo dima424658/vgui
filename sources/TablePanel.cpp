@@ -1,9 +1,50 @@
 #include <algorithm>
 
 #include <VGUI_TablePanel.h>
-
 #include <VGUI_HeaderPanel.h>
-#include "handlers/FooVGuiTablePanelHandler.hpp"
+#include <VGUI_ChangeSignal.h>
+#include <VGUI_InputSignal.h>
+#include <VGUI_RepaintSignal.h>
+
+namespace
+{
+  class FooVGuiTablePanelHandler : public vgui::InputSignal, public vgui::RepaintSignal, public vgui::ChangeSignal
+  {
+  private:
+    vgui::TablePanel* _table;
+
+  public:
+    FooVGuiTablePanelHandler(vgui::TablePanel* table) : _table{ table } {}
+    
+    void valueChanged(vgui::Panel* panel)
+    {
+      int cols = _table->getColumnCount();
+      int x0, x1;
+
+      auto header = dynamic_cast<vgui::HeaderPanel*>(panel);
+
+      for (auto i = 0; i < header->getSectionCount() && i < cols; ++i)
+      {
+        header->getSectionExtents(i, x0, x1);
+        _table->setColumnExtents(i, x0, x1);
+      }
+    }
+
+    void panelRepainted(vgui::Panel* panel) { _table->repaint(); }
+
+    void mousePressed(vgui::MouseCode code, vgui::Panel* panel) { _table->privateMousePressed(code, panel); }
+    void mouseDoublePressed(vgui::MouseCode code, vgui::Panel* panel) { _table->privateMouseDoublePressed(code, panel); }
+    void keyTyped(vgui::KeyCode code, vgui::Panel* panel) { _table->privateKeyTyped(code, panel); }
+    void cursorMoved(int x, int y, vgui::Panel* panel) {}
+    void cursorEntered(vgui::Panel* panel) {}
+    void cursorExited(vgui::Panel* panel) {}
+    void mouseReleased(vgui::MouseCode code, vgui::Panel* panel) {}
+    void mouseWheeled(int delta, vgui::Panel* panel) {}
+    void keyPressed(vgui::KeyCode code, vgui::Panel* panel) {}
+    void keyReleased(vgui::KeyCode code, vgui::Panel* panel) {}
+    void keyFocusTicked(vgui::Panel* panel) {}
+  };
+};
 
 void vgui::TablePanel::setCellEditingEnabled(bool state)
 {
@@ -181,7 +222,7 @@ void vgui::TablePanel::paint()
 
 void vgui::TablePanel::setHeaderPanel(vgui::HeaderPanel* header)
 {
-  header->addChangeSignal(new vgui::FooVGuiTablePanelHandler{this});
+  header->addChangeSignal(new FooVGuiTablePanelHandler{ this });
   header->fireChangeSignal();
 
   repaint();
@@ -262,5 +303,5 @@ vgui::TablePanel::TablePanel(int x, int y, int wide, int tall, int columnCount)
   vgui::Color p_color{ vgui::Scheme::SchemeColor::sc_white };
   setFgColor(p_color);
 
-  addInputSignal(new vgui::FooVGuiTablePanelHandler{ this });
+  addInputSignal(new FooVGuiTablePanelHandler{ this });
 }

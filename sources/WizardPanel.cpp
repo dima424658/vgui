@@ -6,6 +6,29 @@
 
 #include "handlers/FooBackNextHandler.h"
 
+namespace
+{
+  class FooBackHandler : public vgui::ActionSignal
+  {
+  private:
+    vgui::WizardPanel* _wizardPanel;
+
+  public:
+    FooBackHandler(vgui::WizardPanel* wizardPanel) : _wizardPanel{ wizardPanel } {}
+    void actionPerformed(vgui::Panel* panel) { _wizardPanel->doBack(); }
+  };
+
+  class FooNextHandler : public vgui::ActionSignal
+  {
+  private:
+    vgui::WizardPanel* _wizardPanel;
+
+  public:
+    FooNextHandler(vgui::WizardPanel* wizardPanel) : _wizardPanel{ wizardPanel } {}
+    void actionPerformed(vgui::Panel* panel) { _wizardPanel->doNext(); }
+  };
+}
+
 void vgui::WizardPanel::WizardPage::init()
 {
   _backWizardPage = nullptr;
@@ -286,31 +309,31 @@ void vgui::WizardPanel::WizardPage::getTitle(char* buf, int bufLen)
 
 void vgui::WizardPanel::WizardPage::setTitle(const char* title)
 {
-  delete [] _title;
+  delete[] _title;
   _title = vgui::vgui_strdup(title);
 }
 
 void vgui::WizardPanel::WizardPage::setCancelButtonText(const char* text)
 {
-  delete [] _cancelButtonText;
+  delete[] _cancelButtonText;
   _cancelButtonText = vgui::vgui_strdup(text);
 }
 
 void vgui::WizardPanel::WizardPage::setFinishedButtonText(const char* text)
 {
-  delete [] _finishedButtonText;
+  delete[] _finishedButtonText;
   _finishedButtonText = vgui::vgui_strdup(text);
 }
 
 void vgui::WizardPanel::WizardPage::setNextButtonText(const char* text)
 {
-  delete [] _nextButtonText;
+  delete[] _nextButtonText;
   _nextButtonText = vgui::vgui_strdup(text);
 }
 
 void vgui::WizardPanel::WizardPage::setBackButtonText(const char* text)
 {
-  delete [] _backButtonText;
+  delete[] _backButtonText;
   _backButtonText = vgui::vgui_strdup(text);
 }
 
@@ -368,11 +391,11 @@ vgui::WizardPanel::WizardPanel(int x, int y, int wide, int tall)
 
   _backButton = new vgui::Button{ "back", 20, 100 };
   _backButton->setParent(this);
-  _backButton->addActionSignal(new handlers::FooBackHandler(this));
+  _backButton->addActionSignal(new FooBackHandler{this});
 
   _nextButton = new vgui::Button{ "next", 80, 100 };
   _nextButton->setParent(this);
-  _nextButton->addActionSignal(new handlers::FooNextHandler(this));
+  _nextButton->addActionSignal(new FooNextHandler{this});
 
   _finishedButton = new vgui::Button{ "finished", 120, 100 };
   _finishedButton->setParent(this);

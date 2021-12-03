@@ -4,9 +4,411 @@
 #include <VGUI_Button.h>
 #include <VGUI_FrameSignal.h>
 #include <VGUI_SurfaceBase.h>
+#include <VGUI_InputSignal.h>
+#include <VGUI_ActionSignal.h>
 
-#include "handlers/FooGripSignals.hpp"
-#include "handlers/FooMinimizeButtonHandler.hpp"
+namespace
+{
+  class FooMinimizeButtonHandler : public vgui::ActionSignal
+  {
+  private:
+    vgui::Frame* _frame;
+  public:
+    FooMinimizeButtonHandler(vgui::Frame* frame) : _frame{ frame } {}
+
+    virtual void actionPerformed(vgui::Panel* panel) { _frame->fireMinimizingSignal(); }
+  };
+
+  class FooCloseButtonHandler : public vgui::ActionSignal
+  {
+  private:
+    vgui::Frame* _frame;
+  public:
+    FooCloseButtonHandler(vgui::Frame* frame) : _frame{ frame } {}
+
+    virtual void actionPerformed(vgui::Panel* panel) { _frame->fireClosingSignal(); }
+  };
+
+  class FooDraggerSignal : public vgui::InputSignal
+  {
+  protected:
+    vgui::Frame* _frame;
+    bool _dragging;
+    int _dragStart[2];
+    int _dragOrgPos[2], _dragOrgPos2[2];
+    int _dragOrgSize[2], _dragOrgSize2[2];
+
+  public:
+    FooDraggerSignal(vgui::Frame* frame)
+      : _frame{ frame },
+      _dragging{ false },
+      _dragStart{ 0, 0 },
+      _dragOrgPos{ 0, 0 }, _dragOrgPos2{ 0, 0 },
+      _dragOrgSize{ 0, 0 }, _dragOrgSize2{ 0, 0 } {}
+
+    void cursorMoved(int x, int y, vgui::Panel* panel)
+    {
+      if (_dragging)
+      {
+        if (panel->getParent())
+          panel->getParent()->getApp()->getCursorPos(x, y);
+
+        auto frame = dynamic_cast<vgui::Frame*>(panel->getParent());
+        if (frame)
+        {
+          if (frame->isInternal())
+          {
+            moved(x - _dragStart[0], y - _dragStart[1], true, frame, frame->getParent());
+            if (frame->getParent())
+              frame->getParent()->repaint();
+          }
+          else
+          {
+            auto parent = frame->getParent();
+            if (parent)
+            {
+              moved(x - _dragStart[0], y - _dragStart[1], true, frame, frame->getParent());
+            }
+
+            if (parent->getParent())
+              parent->getParent()->repaint();
+
+            parent->repaint();
+          }
+        }
+      }
+    }
+    void cursorEntered(vgui::Panel* panel) {}
+    void cursorExited(vgui::Panel* panel) {}
+    void mousePressed(vgui::MouseCode code, vgui::Panel* panel)
+    {
+      int x, y;
+      int x0, y0;
+      int x1, y1;
+
+      auto frame = dynamic_cast<vgui::Frame*>(panel->getParent());
+      if (frame && code == vgui::MouseCode::MOUSE_LEFT)
+      {
+        _dragging = true;
+
+        frame->getApp()->getCursorPos(x, y);
+        _dragStart[0] = x;
+        _dragStart[1] = y;
+
+        frame->getPos(_dragOrgPos[0], _dragOrgPos[1]);
+        frame->getSize(_dragOrgSize[0], _dragOrgSize[1]);
+
+        auto parent = frame->getParent();
+        if (parent)
+        {
+          parent->getPos(_dragOrgPos2[0], _dragOrgPos2[1]);
+          parent->getSize(_dragOrgSize2[0], _dragOrgSize2[1]);
+          parent->getAbsExtents(x0, y0, x1, y1);
+          parent->getApp()->setMouseArena(x0, y0, x1, y1, true);
+          parent->removeChild(frame); // ???
+          parent->addChild(frame); // ???
+        }
+
+        frame->getApp()->setMouseCapture(panel);
+        frame->requestFocus();
+        frame->repaintAll();
+      }
+    }
+
+    void mouseDoublePressed(vgui::MouseCode code, vgui::Panel* panel) {}
+    void mouseReleased(vgui::MouseCode code, vgui::Panel* panel)
+    {
+      _dragging = false;
+
+      panel->getApp()->setMouseArena(0, 0, 0, 0, false);
+      panel->getApp()->setMouseCapture(nullptr);
+    }
+    void mouseWheeled(int delta, vgui::Panel* panel) {}
+    void keyPressed(vgui::KeyCode code, vgui::Panel* panel) {}
+    void keyTyped(vgui::KeyCode code, vgui::Panel* panel) {}
+    void keyReleased(vgui::KeyCode code, vgui::Panel* panel) {}
+    void keyFocusTicked(vgui::Panel* panel) {}
+    virtual void moved(int dx, int dy, bool internal, vgui::Panel* panel, vgui::Panel* parent) {};
+  };
+
+  class FooTopGripSignal : public FooDraggerSignal
+  {
+  public:
+    FooTopGripSignal(vgui::Frame* frame) : FooDraggerSignal{ frame } {}
+    void moved(int dx, int dy, bool internal, vgui::Panel* panel, vgui::Panel* parent)
+    {
+      vgui::Panel* thisa;
+      int dxa, dya;
+
+      if (_frame->isSizeable())
+      {
+        if (internal)
+        {
+          panel->setPos(_dragOrgPos[0], dy + _dragOrgPos[1]);
+
+          thisa = panel;
+          dxa = _dragOrgSize[0];
+          dya = _dragOrgSize[1] - dy;
+        }
+        else
+        {
+          parent->setPos(_dragOrgPos2[0], dy + _dragOrgPos2[1]);
+
+          thisa = parent;
+          dxa = _dragOrgSize2[0];
+          dya = _dragOrgSize2[1] - dy;
+        }
+
+        thisa->setSize(dxa, dya);
+      }
+    }
+  };
+
+  class FooBottomGripSignal : public FooDraggerSignal
+  {
+  public:
+    FooBottomGripSignal(vgui::Frame* frame) : FooDraggerSignal{ frame } {}
+    void moved(int dx, int dy, bool internal, vgui::Panel* panel, vgui::Panel* parent)
+    {
+      vgui::Panel* thisa;
+      int dxa, dya;
+
+      if (_frame->isSizeable())
+      {
+        if (internal)
+        {
+          thisa = panel;
+          dxa = _dragOrgSize[0];
+          dya = _dragOrgSize[1] + dy;
+        }
+        else
+        {
+          thisa = parent;
+          dxa = _dragOrgSize2[0];
+          dya = _dragOrgSize2[1] + dy;
+        }
+        thisa->setSize(dxa, dya);
+      }
+    }
+  };
+
+  class FooLeftGripSignal : public FooDraggerSignal
+  {
+  public:
+    FooLeftGripSignal(vgui::Frame* frame) : FooDraggerSignal{ frame } {}
+    void moved(int dx, int dy, bool internal, vgui::Panel* panel, vgui::Panel* parent)
+    {
+      vgui::Panel* thisa;
+      int dxa, dya;
+
+      if (_frame->isSizeable())
+      {
+        if (internal)
+        {
+          panel->setPos(dx + _dragOrgPos[0], _dragOrgPos[1]);
+
+          thisa = panel;
+          dxa = _dragOrgSize[0] - dx;
+          dya = _dragOrgSize[1];
+        }
+        else
+        {
+          parent->setPos(dx + _dragOrgPos2[0], _dragOrgPos2[1]);
+
+          thisa = parent;
+          dxa = _dragOrgSize2[0] - dx;
+          dya = _dragOrgSize2[1];
+        }
+
+        thisa->setSize(dxa, dya);
+      }
+    }
+  };
+
+  class FooRightGripSignal : public FooDraggerSignal
+  {
+  public:
+    FooRightGripSignal(vgui::Frame* frame) : FooDraggerSignal{ frame } {}
+    void moved(int dx, int dy, bool internal, vgui::Panel* panel, vgui::Panel* parent)
+    {
+      vgui::Panel* thisa;
+      int dxa, dya;
+
+      if (_frame->isSizeable())
+      {
+        if (internal)
+        {
+          thisa = panel;
+          dxa = _dragOrgSize[0] + dx;
+          dya = _dragOrgSize[1];
+        }
+        else
+        {
+          thisa = parent;
+          dxa = _dragOrgSize2[0] + dx;
+          dya = _dragOrgSize2[1];
+        }
+
+        thisa->setSize(dxa, dya);
+      }
+    }
+
+  };
+
+  class FooTopLeftGripSignal : public FooDraggerSignal
+  {
+  public:
+    FooTopLeftGripSignal(vgui::Frame* frame) : FooDraggerSignal{ frame } {}
+    void moved(int dx, int dy, bool internal, vgui::Panel* panel, vgui::Panel* parent)
+    {
+      vgui::Panel* thisa;
+      int dxa, dya;
+
+      if (_frame->isSizeable())
+      {
+        if (internal)
+        {
+          panel->setPos(dx + _dragOrgPos[0], _dragOrgPos[1] + dy);
+
+          thisa = panel;
+          dya = _dragOrgSize[1] - dy;
+          dxa = _dragOrgSize[0] - dx;
+        }
+        else
+        {
+          parent->setPos(dx + _dragOrgPos2[0], _dragOrgPos2[1]);
+
+          thisa = parent;
+          dya = _dragOrgSize2[1] + dy;
+          dxa = _dragOrgSize2[0] - dx;
+        }
+        thisa->setSize(dxa, dya);
+      }
+    }
+  };
+
+  class FooTopRightGripSignal : public FooDraggerSignal
+  {
+  public:
+    FooTopRightGripSignal(vgui::Frame* frame) : FooDraggerSignal{ frame } {}
+    void moved(int dx, int dy, bool internal, vgui::Panel* panel, vgui::Panel* parent)
+    {
+      vgui::Panel* thisa;
+      int dxa, dya;
+
+      if (_frame->isSizeable())
+      {
+        if (internal)
+        {
+          panel->setPos(_dragOrgPos[0], dy + _dragOrgPos[1]);
+
+          thisa = panel;
+          dya = _dragOrgSize[1] - dy;
+          dxa = _dragOrgSize[0] + dx;
+        }
+        else
+        {
+          parent->setPos(_dragOrgPos2[0], dy + _dragOrgPos2[1]);
+
+          thisa = parent;
+          dya = _dragOrgSize2[1] - dy;
+          dxa = _dragOrgSize2[0] + dx;
+        }
+        thisa->setSize(dxa, dya);
+      }
+    }
+  };
+
+  class FooBottomLeftGripSignal : public FooDraggerSignal
+  {
+  public:
+    FooBottomLeftGripSignal(vgui::Frame* frame) : FooDraggerSignal{ frame } {}
+    void moved(int dx, int dy, bool internal, vgui::Panel* panel, vgui::Panel* parent)
+    {
+      vgui::Panel* thisa;
+      int dxa, dya;
+
+      if (_frame->isSizeable())
+      {
+        if (internal)
+        {
+          panel->setPos(dx + _dragOrgPos[0], _dragOrgPos[1]);
+
+          thisa = panel;
+          dya = _dragOrgSize[1] + dy;
+          dxa = _dragOrgSize[0] - dx;
+        }
+        else
+        {
+          parent->setPos(dx + _dragOrgPos2[0], _dragOrgPos2[1]);
+
+          thisa = parent;
+          dya = _dragOrgSize2[1] + dy;
+          dxa = _dragOrgSize2[0] - dx;
+        };
+
+        thisa->setSize(dxa, dya);
+      }
+    }
+  };
+
+  class FooBottomRightGripSignal : public FooDraggerSignal
+  {
+  public:
+    FooBottomRightGripSignal(vgui::Frame* frame) : FooDraggerSignal{ frame } {}
+    void moved(int dx, int dy, bool internal, vgui::Panel* panel, vgui::Panel* parent)
+    {
+      vgui::Panel* thisa;
+      int dxa, dya;
+
+      if (_frame->isSizeable())
+      {
+        if (internal)
+        {
+          thisa = panel;
+          dya = _dragOrgSize[1] + dy;
+          dxa = _dragOrgSize[0] + dx;
+        }
+        else
+        {
+          thisa = parent;
+          dya = _dragOrgSize2[1] + dy;
+          dxa = _dragOrgSize2[0] + dx;
+        }
+        thisa->setSize(dxa, dya);
+      }
+    }
+  };
+
+  class FooCaptionGripSignal : public FooDraggerSignal
+  {
+  public:
+    FooCaptionGripSignal(vgui::Frame* frame) : FooDraggerSignal{ frame } {}
+    void moved(int dx, int dy, bool internal, vgui::Panel* panel, vgui::Panel* parent)
+    {
+      vgui::Panel* thisa;
+      int dxa, dya;
+
+      if (_frame->isMoveable())
+      {
+        if (internal)
+        {
+          thisa = panel;
+          dya = _dragOrgPos[1] + dy;
+          dxa = _dragOrgPos[0] + dx;
+        }
+        else
+        {
+          thisa = parent;
+          dya = _dragOrgPos2[1] + dy;
+          dxa = _dragOrgPos2[0] + dx;
+        }
+        thisa->setPos(dxa, dya);
+      }
+    }
+  };
+
+}
 
 void vgui::Frame::setInternal(bool state)
 {

@@ -1,11 +1,94 @@
-#include <VGUI_EditPanel.h>
+#include <algorithm>
 
+#include <VGUI_EditPanel.h>
 #include <VGUI_App.h>
 #include <VGUI_Font.h>
+#include <VGUI_InputSignal.h>
 
-#include "handlers/FooDefaultEditPanelSignal.h"
+#include <VGUI_MouseCode.h>
+#include <VGUI_KeyCode.h>
 
-#include <algorithm>
+namespace
+{
+  class FooDefaultEditPanelSignal : public vgui::InputSignal
+  {
+  private:
+    vgui::EditPanel* _editPanel;
+
+  public:
+    FooDefaultEditPanelSignal(vgui::EditPanel* editPanel) : _editPanel{ editPanel } {}
+
+    void mousePressed(vgui::MouseCode code, vgui::Panel* panel)
+    {
+      _editPanel->requestFocus();
+      _editPanel->repaint();
+    }
+
+    void keyTyped(vgui::KeyCode code, vgui::Panel* panel)
+    {
+      switch (code)
+      {
+      case vgui::KeyCode::KEY_ENTER:
+        _editPanel->doCursorNewLine();
+        break;
+      case vgui::KeyCode::KEY_BACKSPACE:
+        _editPanel->doCursorBackspace();
+        break;
+      case vgui::KeyCode::KEY_DELETE:
+        _editPanel->doCursorDelete();
+        break;
+      case vgui::KeyCode::KEY_HOME:
+        _editPanel->doCursorToStartOfLine();
+        break;
+      case vgui::KeyCode::KEY_END:
+        _editPanel->doCursorToEndOfLine();
+        break;
+      case vgui::KeyCode::KEY_LSHIFT:
+      case vgui::KeyCode::KEY_RSHIFT:
+      case vgui::KeyCode::KEY_LALT:
+      case vgui::KeyCode::KEY_RALT:
+      case vgui::KeyCode::KEY_LCONTROL:
+      case vgui::KeyCode::KEY_RCONTROL:
+        return;
+      case vgui::KeyCode::KEY_UP:
+        _editPanel->doCursorUp();
+        break;
+      case vgui::KeyCode::KEY_LEFT:
+        _editPanel->doCursorLeft();
+        break;
+      case vgui::KeyCode::KEY_DOWN:
+        _editPanel->doCursorDown();
+        break;
+      case vgui::KeyCode::KEY_RIGHT:
+        _editPanel->doCursorRight();
+        break;
+      default:
+        auto ch = _editPanel->getApp()->getKeyCodeChar(code, _editPanel->isKeyDown(vgui::KeyCode::KEY_LSHIFT) || _editPanel->isKeyDown(vgui::KeyCode::KEY_RSHIFT));
+        _editPanel->doCursorInsertChar(ch);
+        break;
+      }
+    }
+
+    void keyFocusTicked(vgui::Panel* panel)
+    {
+      bool blink;
+      int nextBlinkTime;
+
+      _editPanel->getCursorBlink(blink, nextBlinkTime);
+      if (_editPanel->getApp()->getTimeMillis() > nextBlinkTime)
+        _editPanel->setCursorBlink(!blink);
+    }
+
+    void cursorMoved(int x, int y, vgui::Panel* panel) {}
+    void cursorEntered(vgui::Panel* panel) {}
+    void cursorExited(vgui::Panel* panel) {}
+    void mouseDoublePressed(vgui::MouseCode code, vgui::Panel* panel) {}
+    void mouseReleased(vgui::MouseCode code, vgui::Panel* panel) {}
+    void mouseWheeled(int delta, vgui::Panel* panel) {}
+    void keyPressed(vgui::KeyCode code, vgui::Panel* panel) {}
+    void keyReleased(vgui::KeyCode code, vgui::Panel* panel) {}
+  };
+}
 
 void vgui::EditPanel::paintBackground()
 {
@@ -349,9 +432,7 @@ vgui::EditPanel::EditPanel(int x, int y, int wide, int tall)
   _cursorNextBlinkTime{ getApp()->getTimeMillis() + 400 }
 {
   repaint();
-
-  auto s = new FooDefaultEditPanelSignal{ this };
-  addInputSignal(s);
+  addInputSignal(new FooDefaultEditPanelSignal{ this });
 }
 
 void vgui::EditPanel::getCursorBlink(bool& blink, int& nextBlinkTime)
