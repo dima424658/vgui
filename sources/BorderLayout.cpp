@@ -8,7 +8,7 @@ namespace vgui
   class BorderLayoutInfo : public LayoutInfo
   {
   public:
-    virtual LayoutInfo* getThis() = 0;
+    virtual LayoutInfo* getThis() { return this; }
 
     vgui::BorderLayout::Alignment _alignment;
   };
@@ -107,4 +107,12 @@ void vgui::BorderLayout::performLayout(vgui::Panel* panel)
       }
     }
   }
+}
+
+vgui::LayoutInfo * vgui::BorderLayout::createLayoutInfo(vgui::BorderLayout::Alignment alignment)
+{
+  auto result = new BorderLayoutInfo;
+  result->_alignment = alignment;
+  
+  return result;
 }

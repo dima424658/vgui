@@ -1,4 +1,5 @@
 #pragma once
+#include "CUtlMemory.h"
 
 template <typename T>
 struct CUtlMemory;

@@ -84,3 +84,12 @@ vgui::Desktop::Desktop(int x, int y, int wide, int tall)
   _taskBar->setParent(this);
 }
 
+vgui::Panel* vgui::Desktop::getBackground()
+{
+  return _background;
+}
+
+vgui::Panel* vgui::Desktop::getForeground()
+{
+  return _foreground;
+}

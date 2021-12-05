@@ -174,6 +174,11 @@ void vgui::WizardPanel::WizardPage::setWantedFocus(vgui::Panel* panel)
   _wantedFocus = panel;
 }
 
+vgui::Panel* vgui::WizardPanel::WizardPage::getWantedFocus()
+{
+  return _wantedFocus;
+}
+
 void vgui::WizardPanel::performLayout()
 {
   char buf[256];

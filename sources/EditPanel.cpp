@@ -15,18 +15,18 @@ namespace
   class FooDefaultEditPanelSignal : public vgui::InputSignal
   {
   private:
-    vgui::EditPanel* _editPanel;
+    vgui::EditPanel *_editPanel;
 
   public:
-    FooDefaultEditPanelSignal(vgui::EditPanel* editPanel) : _editPanel{ editPanel } {}
+    FooDefaultEditPanelSignal(vgui::EditPanel *editPanel) : _editPanel{editPanel} {}
 
-    void mousePressed(vgui::MouseCode code, vgui::Panel* panel)
+    void mousePressed(vgui::MouseCode code, vgui::Panel *panel)
     {
       _editPanel->requestFocus();
       _editPanel->repaint();
     }
 
-    void keyTyped(vgui::KeyCode code, vgui::Panel* panel)
+    void keyTyped(vgui::KeyCode code, vgui::Panel *panel)
     {
       switch (code)
       {
@@ -71,7 +71,7 @@ namespace
       }
     }
 
-    void keyFocusTicked(vgui::Panel* panel)
+    void keyFocusTicked(vgui::Panel *panel)
     {
       bool blink;
       int nextBlinkTime;
@@ -81,14 +81,14 @@ namespace
         _editPanel->setCursorBlink(!blink);
     }
 
-    void cursorMoved(int x, int y, vgui::Panel* panel) {}
-    void cursorEntered(vgui::Panel* panel) {}
-    void cursorExited(vgui::Panel* panel) {}
-    void mouseDoublePressed(vgui::MouseCode code, vgui::Panel* panel) {}
-    void mouseReleased(vgui::MouseCode code, vgui::Panel* panel) {}
-    void mouseWheeled(int delta, vgui::Panel* panel) {}
-    void keyPressed(vgui::KeyCode code, vgui::Panel* panel) {}
-    void keyReleased(vgui::KeyCode code, vgui::Panel* panel) {}
+    void cursorMoved(int x, int y, vgui::Panel *panel) {}
+    void cursorEntered(vgui::Panel *panel) {}
+    void cursorExited(vgui::Panel *panel) {}
+    void mouseDoublePressed(vgui::MouseCode code, vgui::Panel *panel) {}
+    void mouseReleased(vgui::MouseCode code, vgui::Panel *panel) {}
+    void mouseWheeled(int delta, vgui::Panel *panel) {}
+    void keyPressed(vgui::KeyCode code, vgui::Panel *panel) {}
+    void keyReleased(vgui::KeyCode code, vgui::Panel *panel) {}
   };
 }
 
@@ -101,7 +101,7 @@ void vgui::EditPanel::paintBackground()
   drawFilledRect(0, 0, wide, tall);
 }
 
-void vgui::EditPanel::setChar(vgui::Dar<char>* lineDar, int x, char ch_0)
+void vgui::EditPanel::setChar(vgui::Dar<char> *lineDar, int x, char ch_0)
 {
   setChar(lineDar, x, ch_0, ' ');
 }
@@ -281,13 +281,13 @@ void vgui::EditPanel::doCursorDelete()
   }
 }
 
-void vgui::EditPanel::setFont(vgui::Font* font)
+void vgui::EditPanel::setFont(vgui::Font *font)
 {
   _font = font;
   repaint();
 }
 
-void vgui::EditPanel::doCursorPrintf(char* format, ...)
+void vgui::EditPanel::doCursorPrintf(char *format, ...)
 {
   char buf[8192];
   std::va_list __varargs;
@@ -309,12 +309,12 @@ void vgui::EditPanel::doCursorPrintf(char* format, ...)
   repaint();
 }
 
-int vgui::EditPanel::spatialCharOffsetBetweenTwoLines(vgui::Dar<char>* srcDar, vgui::Dar<char>* dstDar, int x)
+int vgui::EditPanel::spatialCharOffsetBetweenTwoLines(vgui::Dar<char> *srcDar, vgui::Dar<char> *dstDar, int x)
 {
 
   int wide = 0;
   int a, b, c;
-  vgui::Font* font;
+  vgui::Font *font;
   if (!dstDar || !srcDar)
     return x;
 
@@ -335,7 +335,7 @@ int vgui::EditPanel::spatialCharOffsetBetweenTwoLines(vgui::Dar<char>* srcDar, v
   }
 
   int offset = 0;
-  for (auto i = 0; ; ++i)
+  for (auto i = 0;; ++i)
   {
     auto ch = ' ';
 
@@ -352,7 +352,7 @@ int vgui::EditPanel::spatialCharOffsetBetweenTwoLines(vgui::Dar<char>* srcDar, v
   }
 }
 
-void vgui::EditPanel::shiftLineRight(vgui::Dar<char>* lineDar, int x, int count)
+void vgui::EditPanel::shiftLineRight(vgui::Dar<char> *lineDar, int x, int count)
 {
   if (x <= 0 || count < 0)
     return;
@@ -361,7 +361,7 @@ void vgui::EditPanel::shiftLineRight(vgui::Dar<char>* lineDar, int x, int count)
     setChar(lineDar, i + count, (*lineDar)[i]);
 }
 
-void vgui::EditPanel::getText(int lineIndex, int offset, char* buf, int bufLen)
+void vgui::EditPanel::getText(int lineIndex, int offset, char *buf, int bufLen)
 {
   auto line = _lineDarDar[lineIndex];
 
@@ -375,7 +375,7 @@ void vgui::EditPanel::getText(int lineIndex, int offset, char* buf, int bufLen)
     buf[0] = '\0';
 }
 
-void vgui::EditPanel::shiftLineLeft(vgui::Dar<char>* lineDar, int x, int count)
+void vgui::EditPanel::shiftLineLeft(vgui::Dar<char> *lineDar, int x, int count)
 {
   if (x <= 0 || count < 0)
     return;
@@ -388,7 +388,7 @@ void vgui::EditPanel::shiftLineLeft(vgui::Dar<char>* lineDar, int x, int count)
     lineDar->setCount(lineDar->getCount() - count);
 }
 
-void vgui::EditPanel::setChar(vgui::Dar<char>* lineDar, int x, char ch_0, char fill)
+void vgui::EditPanel::setChar(vgui::Dar<char> *lineDar, int x, char ch_0, char fill)
 {
   if (!lineDar || x < 0)
     return;
@@ -406,7 +406,7 @@ void vgui::EditPanel::setChar(vgui::Dar<char>* lineDar, int x, char ch_0, char f
 
 void vgui::EditPanel::doCursorNewLine()
 {
-  vgui::Dar<char>* newLineDar;
+  vgui::Dar<char> *newLineDar;
 
   if (!getLine(_cursor[1]))
     return;
@@ -427,18 +427,34 @@ void vgui::EditPanel::doCursorNewLine()
 }
 
 vgui::EditPanel::EditPanel(int x, int y, int wide, int tall)
-  :vgui::Panel{ x, y, wide, tall },
-  _font{ nullptr },
-  _cursor{ 0, 0 },
-  _cursorBlink{ true },
-  _cursorNextBlinkTime{ getApp()->getTimeMillis() + 400 }
+    : vgui::Panel{x, y, wide, tall},
+      _font{nullptr},
+      _cursor{0, 0},
+      _cursorBlink{true},
+      _cursorNextBlinkTime{getApp()->getTimeMillis() + 400}
 {
   repaint();
-  addInputSignal(new FooDefaultEditPanelSignal{ this });
+  addInputSignal(new FooDefaultEditPanelSignal{this});
 }
 
-void vgui::EditPanel::getCursorBlink(bool& blink, int& nextBlinkTime)
+void vgui::EditPanel::getCursorBlink(bool &blink, int &nextBlinkTime)
 {
   blink = _cursorBlink;
   nextBlinkTime = _cursorNextBlinkTime;
+}
+
+void vgui::EditPanel::addLine()
+{
+}
+
+vgui::Dar<char> *vgui::EditPanel::getLine(int lineIndex)
+{
+  if (lineIndex >= _lineDarDar.getCount())
+  {
+    _lineDarDar.ensureCapacity(lineIndex + 1);
+    for (auto i = _lineDarDar.getCount(); i < lineIndex + 1; ++i)
+      _lineDarDar.addElement(new vgui::Dar<char>{});
+  }
+  
+  return _lineDarDar[lineIndex]
 }
