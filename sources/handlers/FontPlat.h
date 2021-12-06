@@ -32,27 +32,32 @@ namespace vgui
         int getWide();
         void drawSetTextFont(vgui::SurfacePlat *);
 
+        static bool ExtendedABCWidthsCacheLessFunc(const vgui::FontPlat::abc_cache_t* lhs, const vgui::FontPlat::abc_cache_t* rhs);
+
     private:
         int bufSize[2];
         uchar *buf;
         VFontData m_BitmapFont;
-        bool m_bBitmapFont;
         char m_szName[32];
+
+        int m_iWide;
         int m_iTall;
         int m_iWeight;
-        int m_iFlags;
-        bool m_bAntiAliased;
-        bool m_bRotary;
-        bool m_bAdditive;
-        int m_iDropShadowOffset;
-        bool m_bUnderlined;
-        int m_iOutlineSize;
-        int m_iHeight;
-        int m_iMaxCharWidth;
-        int m_iAscent;
+        int m_iFlags = 0;
+
+        bool m_bBitmapFont = false;
+        bool m_bAntiAliased = false;
+        bool m_bRotary = false;
+        bool m_bAdditive = false;
+        bool m_bUnderlined = false;
+
+        int m_iDropShadowOffset = 0;
+        int m_iOutlineSize = 0;
+        int m_iMaxCharWidth = 0;
+        int m_iAscent = 0;
         CUtlRBTree<vgui::FontPlat::abc_cache_t, unsigned short> m_ExtendedABCWidthsCache;
-        int m_iScanLines;
-        int m_iBlur;
-        float *m_pGaussianDistribution;
+        int m_iScanLines = 0;
+        int m_iBlur = 0;
+        float *m_pGaussianDistribution = nullptr;
     };
 } // namespace vgui

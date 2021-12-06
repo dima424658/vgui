@@ -15,7 +15,7 @@ namespace
 
   public:
     FooVGuiTablePanelHandler(vgui::TablePanel* table) : _table{ table } {}
-    
+
     void valueChanged(vgui::Panel* panel)
     {
       int cols = _table->getColumnCount();
@@ -304,4 +304,39 @@ vgui::TablePanel::TablePanel(int x, int y, int wide, int tall, int columnCount)
   setFgColor(p_color);
 
   addInputSignal(new FooVGuiTablePanelHandler{ this });
+}
+
+vgui::Panel* vgui::TablePanel::isWithinTraverse(int x, int y)
+{
+  int gridTall;
+
+  auto result = vgui::Panel::isWithinTraverse(x, y);
+  if (result != this)
+    return result;
+
+  for (auto i = 0; i < _columnDar.getCount(); ++i)
+  {
+    auto v11 = (_gridWide / 2 - 1) + ((_columnDar[i] >> 12) & 0xFFF);
+
+    auto v10 = (_columnDar[i] & 0xFFF) - ((_columnDar[i] >> 12) & 0xFFF) - _gridWide;
+
+    for(auto j = 0; j < getRowCount(); ++j)
+    {
+      _fakeInputPanel->setParent(this);
+      _fakeInputPanel->setBounds(v11, gridTall, v10, getCellTall(i));
+      _fakeInputPanel->solveTraverse();
+
+      if (_fakeInputPanel->isWithinTraverse(x, y) == _fakeInputPanel)
+      {
+        _mouseOverCell[0] = i;
+        _mouseOverCell[1] = j;
+        return this;
+      }
+    
+      gridTall += _gridTall + getCellTall(i);
+    }
+  }
+
+  _fakeInputPanel->setParent(nullptr);
+  return this;
 }

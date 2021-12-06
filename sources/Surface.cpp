@@ -14,6 +14,76 @@ vgui::Surface::Surface(vgui::Panel* embeddedPanel)
   recreateContext();
 }
 
+void  vgui::Surface::setTitle(const char* title)
+{
+
+}
+
+void  vgui::Surface::setWindowedMode()
+{
+
+}
+
+void  vgui::Surface::setAsTopMost(bool state)
+{
+
+}
+
+bool vgui::Surface::isWithin(int x, int y)
+{
+  return false;
+}
+
+void  vgui::Surface::GetMousePos(int& x, int& y)
+{
+
+}
+
+void vgui::Surface::drawSetColor(int r, int g, int b, int a)
+{
+
+}
+
+void vgui::Surface::drawFilledRect(int x0, int y0, int x1, int y1)
+{
+
+}
+
+void vgui::Surface::drawSetTextColor(int r, int g, int b, int a)
+{
+
+}
+
+void vgui::Surface::drawSetTextPos(int x, int y)
+{
+
+}
+
+void vgui::Surface::drawPrintText(const char *text, int textLen)
+{
+
+}
+
+void vgui::Surface::drawTexturedRect(int x0, int y0, int x1, int y1)
+{
+
+}
+
+void vgui::Surface::invalidate(vgui::Panel *panel)
+{
+
+}
+
+void vgui::Surface::enableMouseCapture(bool state)
+{
+
+}
+
+void vgui::Surface::swapBuffers()
+{
+
+}
+
 void vgui::Surface::createPopup(vgui::Panel* embeddedPanel)
 {
   embeddedPanel->setParent(nullptr);
@@ -78,6 +148,16 @@ void vgui::Surface::pushMakeCurrent(vgui::Panel* panel, bool useInsets)
   getPanel()->getAbsExtents(absThis[0], absThis[1], absThis[2], absThis[3]);
   panel->getAbsExtents(absPanel[0], absPanel[1], absPanel[2], absPanel[3]);
   panel->getClipRect(clipRect[0], clipRect[1], clipRect[2], clipRect[3]);
+}
+
+void vgui::Surface::popMakeCurrent(vgui::Panel* panel)
+{
+
+}
+
+void vgui::Surface::applyChanges()
+{
+
 }
 
 void vgui::Surface::drawSetTextFont(vgui::Font* font)

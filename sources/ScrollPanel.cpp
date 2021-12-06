@@ -116,7 +116,7 @@ vgui::ScrollPanel::ScrollPanel(int x, int y, int wide, int tall)
   _client{ new vgui::Panel{ 0, 0, 2 * wide, 2 * tall } },
   _horizontalScrollBar{ new vgui::ScrollBar{ 0, tall - 16, wide - 16, 16, false } },
   _verticalScrollBar{ new vgui::ScrollBar{ wide - 16, 0, 16, tall - 16, true } },
-  _autoVisible{true, true}
+  _autoVisible{ true, true }
 {
   setPaintBorderEnabled(true);
   setPaintBackgroundEnabled(false);
@@ -144,3 +144,22 @@ vgui::ScrollPanel::ScrollPanel(int x, int y, int wide, int tall)
   validate();
 }
 
+vgui::Panel* vgui::ScrollPanel::getClient()
+{
+  return _client;
+}
+
+vgui::Panel* vgui::ScrollPanel::getClientClip()
+{
+  return _clientClip;
+}
+
+vgui::ScrollBar* vgui::ScrollPanel::getHorizontalScrollBar()
+{
+  return _horizontalScrollBar;
+}
+
+vgui::ScrollBar* vgui::ScrollPanel::getVerticalScrollBar()
+{
+  return _verticalScrollBar;
+}

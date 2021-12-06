@@ -456,5 +456,5 @@ vgui::Dar<char> *vgui::EditPanel::getLine(int lineIndex)
       _lineDarDar.addElement(new vgui::Dar<char>{});
   }
   
-  return _lineDarDar[lineIndex]
+  return _lineDarDar[lineIndex];
 }

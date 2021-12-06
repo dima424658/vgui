@@ -5,6 +5,8 @@
 
 #include <sys/time.h>
 
+vgui::App* vgui::App::_instance = nullptr;
+
 vgui::App::App()
 {
   init();
@@ -14,6 +16,11 @@ vgui::App::App(bool externalMain)
   : _externalMain{ externalMain }
 {
   init();
+}
+
+vgui::App* vgui::App::getInstance()
+{
+  return _instance;
 }
 
 void vgui::App::externalTick()
@@ -498,6 +505,36 @@ void vgui::App::getCursorPos(int& x, int& y)
 {
   if (_surfaceBaseDar.getCount() > 0)
     _surfaceBaseDar[0]->GetMousePos(x, y);
+}
+
+void vgui::App::setCursorPos(int x, int y)
+{
+
+}
+
+vgui::Panel* vgui::App::getFocus()
+{
+  return _keyFocus;
+}
+
+void vgui::App::platTick()
+{
+
+}
+
+vgui::Cursor* vgui::App::getCursorOveride()
+{
+  return _cursorOveride;
+}
+
+void vgui::App::internalSetMouseArena(int x0, int y0, int x1, int y1, bool enabled)
+{
+
+}
+
+void vgui::App::setClipboardText(const char* text, int textLen)
+{
+
 }
 
 long vgui::App::getTimeMillis()

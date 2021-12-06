@@ -6,7 +6,7 @@
 #include <VGUI_ButtonController.h>
 #include <VGUI_ActionSignal.h>
 #include <VGUI_InputSignal.h>
-
+#include <VGUI_TreeFolder.h>
 
 namespace
 {
@@ -210,4 +210,16 @@ void vgui::Button::init()
 
   setMouseClickEnabled(vgui::MouseCode::MOUSE_LEFT, true);
   setButtonController(new FooDefaultButtonController{ this });
+}
+
+vgui::Panel* vgui::Button::createPropertyPanel()
+{
+  auto child = new vgui::TreeFolder{ "Button" };
+  child->addChild(new vgui::Label{ "setSelected" });
+  child->addChild(new vgui::Label{ "setArmed" });
+
+  auto PropertyPanel = vgui::Label::createPropertyPanel();
+  PropertyPanel->addChild(child);
+
+  return PropertyPanel;
 }

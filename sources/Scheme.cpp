@@ -25,10 +25,20 @@ void vgui::Scheme::setFont(vgui::Scheme::SchemeFont sf_0, vgui::Font* font)
     _font[sf_0] = font;
 }
 
+vgui::Font* vgui::Scheme::getFont(vgui::Scheme::SchemeFont sf)
+{
+  return _font[sf];
+}
+
 void vgui::Scheme::setCursor(vgui::Scheme::SchemeCursor scu, vgui::Cursor* cursor)
 {
   if (cursor)
     _cursor[scu] = cursor;
+}
+
+vgui::Cursor* vgui::Scheme::getCursor(vgui::Scheme::SchemeCursor sc)
+{
+  return _cursor[sc];
 }
 
 vgui::Scheme::Scheme()

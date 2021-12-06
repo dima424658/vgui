@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2002, Valve LLC, All rights reserved. ============
+//========= Copyright ï¿½ 1996-2002, Valve LLC, All rights reserved. ============
 //
 // Purpose: 
 //
@@ -60,7 +60,7 @@ public:
 protected:
 	virtual void   paint();
 	virtual Panel* isWithinTraverse(int x,int y);
-private:
+public:
 	virtual void privateMousePressed(MouseCode code,Panel* panel);
 	virtual void privateMouseDoublePressed(MouseCode code,Panel* panel);
 	virtual void privateKeyTyped(KeyCode code,Panel* panel);

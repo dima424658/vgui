@@ -10,7 +10,8 @@
 #include <VGUI_FocusNavGroup.h>
 #include <VGUI_FocusChangeSignal.h>
 #include <VGUI_Border.h>
-
+#include <VGUI_TreeFolder.h>
+#include <VGUI_Label.h>
 
 void vgui::Panel::setPos(int x, int y)
 {
@@ -884,6 +885,77 @@ void vgui::Panel::addChild(vgui::Panel* child)
   child->setSurfaceBaseTraverse(_surfaceBase);
 }
 
+vgui::Panel* vgui::Panel::isWithinTraverse(int x, int y)
+{
+  if (_visible && isWithin(x, y))
+  {
+    for (auto i = 0; i < _childDar.getCount(); ++i)
+      if (auto result = _childDar[i]->isWithinTraverse(x, y))
+        return result;
+  }
+
+  return nullptr;
+}
+
+vgui::Cursor* vgui::Panel::getCursor()
+{
+  if (getApp()->getCursorOveride())
+    return getApp()->getCursorOveride();
+  else if (_schemeCursor)
+    return getApp()->getScheme()->getCursor(_schemeCursor);
+  else
+    return _cursor;
+}
+
+vgui::Panel* vgui::Panel::getChild(int index)
+{
+  return _childDar[index];
+}
+
+vgui::SurfaceBase* vgui::Panel::getSurfaceBase()
+{
+  return _surfaceBase;
+}
+
+vgui::Panel* vgui::Panel::createPropertyPanel()
+{
+  auto panel = new vgui::TreeFolder{ "Panel" };
+  panel->addChild(new vgui::Label{ "setPos" });
+  panel->addChild(new vgui::Label{ "setSize" });
+  panel->addChild(new vgui::Label{ "setBorder" });
+  panel->addChild(new vgui::Label{ "setLayout" });
+
+  auto props = new vgui::TreeFolder{ "Properties" };
+  props->addChild(panel);
+
+  return props;
+}
+
+void vgui::Panel::applyPersistanceText(const char* buf)
+{
+
+}
+
+vgui::App* vgui::Panel::getApp()
+{
+  return vgui::App::getInstance();
+}
+
+vgui::LayoutInfo* vgui::Panel::getLayoutInfo()
+{
+  return _layoutInfo;
+}
+
+void vgui::Panel::performLayout()
+{
+
+}
+
+void vgui::Panel::paint()
+{
+
+}
+
 void vgui::Panel::init(int x, int y, int wide, int tall)
 {
   _loc[0] = 0;
@@ -909,7 +981,7 @@ void vgui::Panel::init(int x, int y, int wide, int tall)
   _border = nullptr;
   _buildGroup = nullptr;
   _layoutInfo = nullptr;
-  
+
   _layout = nullptr;
   _needsLayout = true;
   _focusNavGroup = nullptr;

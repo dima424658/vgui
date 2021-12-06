@@ -711,3 +711,8 @@ vgui::Frame::Frame(int x, int y, int wide, int tall)
   _menuButton->setFont(vgui::Scheme::SchemeFont::sf_secondary1);
   _menuButton->setParent(this);
 }
+
+vgui::Panel* vgui::Frame::getClient()
+{
+  return _client;
+}

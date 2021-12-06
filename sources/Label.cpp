@@ -5,6 +5,40 @@
 
 #include <VGUI_Label.h>
 #include <VGUI_TextImage.h>
+#include <VGUI_TreeFolder.h>
+#include <VGUI_ActionSignal.h>
+#include <VGUI_TextEntry.h>
+#include <VGUI_FlowLayout.h>
+
+namespace
+{
+  class FooDumb : public vgui::Panel, public vgui::ActionSignal
+  {
+    vgui::TextEntry* _textEntry;
+    vgui::Label* _label;
+  public:
+    FooDumb(vgui::Label* label, int x, int y, int wide, int tall)
+      : vgui::Panel{ x, y, wide, tall },
+      _textEntry{ new vgui::TextEntry{ "", 0, 0, 80, 20 } },
+      _label{ label }
+    {
+      _textEntry->addActionSignal(this);
+      addChild(_textEntry);
+
+      setLayout(new vgui::FlowLayout{ 2 });
+
+      addChild(new vgui::Label{ "setText", 0, 0, 10, 10 });
+    }
+
+    void actionPerformed(vgui::Panel* panel)
+    {
+      char buf[256];
+      _textEntry->getText(0, buf, 256);
+      _label->setText(buf);
+      _label->repaint();
+    }
+  };
+}
 
 void vgui::Label::getTextSize(int& wide, int& tall)
 {
@@ -300,4 +334,16 @@ vgui::Label::Label(const char* text)
   : vgui::Panel{ 0, 0, 10, 10 }
 {
   init(std::strlen(text) + 1, text, false);
+}
+
+vgui::Panel* vgui::Label::createPropertyPanel()
+{
+  auto folder = new vgui::TreeFolder{ "Label" };
+  folder->addChild(new FooDumb{ this, 0, 0, 200, 20 });
+  folder->addChild(new vgui::Label{ "setContentAlignment", 0, 0, 10, 10 });
+
+  auto PropertyPanel = vgui::Panel::createPropertyPanel();
+  PropertyPanel->addChild(folder);
+
+  return PropertyPanel;
 }

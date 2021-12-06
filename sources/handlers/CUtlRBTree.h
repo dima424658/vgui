@@ -7,14 +7,14 @@ struct CUtlMemory;
 template <typename T, typename U>
 struct CUtlRBTree
 {
-    using LessFunc_t = bool(const T *, const T *);
+    using LessFunc_t = bool(const T*, const T*);
 
     enum class NodeColor_t
     {
         RED = 0,
         BLACK = 1,
     };
-    
+
     struct Links_t
     {
         U m_Left;
@@ -28,10 +28,17 @@ struct CUtlRBTree
         T m_Data;
     };
 
-    LessFunc_t m_LessFunc;
-    CUtlMemory<Node_t> m_Elements;
-    U m_Root;
-    U m_NumElements;
-    U m_FirstFree;
-    U m_TotalElements;
+    LessFunc_t* m_LessFunc = nullptr;
+    CUtlMemory<Node_t> m_Elements{ 0 };
+
+    U m_Root = -1;
+    U m_NumElements = 0;
+    U m_FirstFree = -1;
+    U m_TotalElements = 0;
+
+    CUtlRBTree(LessFunc_t* lessFunc)
+        : m_LessFunc{ lessFunc }
+    {
+
+    }
 };

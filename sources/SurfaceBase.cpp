@@ -98,3 +98,12 @@ vgui::SurfaceBase::~SurfaceBase()
   vgui::App::getInstance()->surfaceBaseDeleted(this);
 }
 
+vgui::Panel* vgui::SurfaceBase::getPanel()
+{
+  return _embeddedPanel;
+}
+
+vgui::App* vgui::SurfaceBase::getApp()
+{
+  return vgui::App::getInstance();
+}

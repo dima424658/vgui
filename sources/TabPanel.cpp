@@ -1,6 +1,7 @@
 #include <VGUI_TabPanel.h>
 #include <VGUI_Border.h>
-#include <VGUI_Panel.h>
+#include <VGUI_ToggleButton.h>
+#include <VGUI_ActionSignal.h>
 
 namespace
 {
@@ -32,6 +33,53 @@ namespace
       drawSetColor(vgui::Scheme::SchemeColor::sc_secondary1);
       drawFilledRect(0, tall - 1, wide, tall);
       drawFilledRect(wide - 1, 0, wide, tall - 1);
+    }
+  };
+
+  class FooTabPanelTab : public vgui::ToggleButton, public vgui::ActionSignal
+  {
+    vgui::TabPanel* _tabPanel;
+  public:
+    FooTabPanelTab(vgui::TabPanel* tabPanel, const char* text, int x, int y) : vgui::ToggleButton{ text, x, y }, _tabPanel{ tabPanel }
+    {
+      addActionSignal(this);
+    }
+
+    void actionPerformed(vgui::Panel* panel)
+    {
+      _tabPanel->setSelectedTab(this);
+    }
+
+    bool isWithin(int x, int y)
+    {
+      return vgui::Panel::isWithin(x, y);
+    }
+
+    void paintBackground()
+    {
+      int wide, tall;
+
+      getPaintSize(wide, tall);
+
+      drawSetColor(isSelected() ? vgui::Scheme::SchemeColor::sc_secondary2 : vgui::Scheme::SchemeColor::sc_secondary3);
+      drawFilledRect(0, 0, wide, tall);
+
+      drawSetColor(vgui::Scheme::SchemeColor::sc_secondary1);
+      drawFilledRect(0, 0, wide, 1);
+      drawFilledRect(0, 1, 1, tall - 1);
+      drawFilledRect(wide - 1, 1, wide, tall - 1);
+
+      drawSetColor(isSelected() ? vgui::Scheme::SchemeColor::sc_secondary3 : vgui::Scheme::SchemeColor::sc_white);
+      drawFilledRect(1, 1, wide - 1, 2);
+      drawFilledRect(1, 2, 2, tall);
+      drawFilledRect(0, tall - 1, 1, tall);
+      drawFilledRect(wide - 1, tall - 1, wide, tall);
+
+      if (isSelected())
+      {
+        drawSetColor(vgui::Scheme::SchemeColor::sc_white);
+        drawFilledRect(0, tall - 1, wide, tall);
+      }
     }
   };
 }
@@ -150,4 +198,28 @@ vgui::TabPanel::TabPanel(int x, int y, int wide, int tall)
 
   _selectedTab = nullptr;
   _selectedPanel = nullptr;
+}
+
+vgui::Panel* vgui::TabPanel::addTab(const char* text)
+{
+  auto tab = new FooTabPanelTab{this, text, 0, 0};
+  tab->setButtonGroup(_buttonGroup);
+
+  _tabArea->insertChildAt(tab, 0);
+  
+  auto tabPanel = new vgui::Panel{0, 0, 20, 20};
+  tabPanel->setVisible(false);
+
+  _clientArea->insertChildAt(tabPanel, 0);
+  
+  if (!_selectedTab)
+  {
+    _selectedTab = tab;
+    _selectedPanel = tabPanel;
+    _selectedPanel->setVisible(true);
+    tab->setSelected(true);
+  }
+
+  recomputeLayout();
+  return tabPanel;
 }

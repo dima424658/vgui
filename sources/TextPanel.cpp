@@ -44,6 +44,11 @@ void vgui::TextPanel::setSize(int wide, int tall)
   _textImage->setSize(wide, tall);
 }
 
+vgui::TextImage* vgui::TextPanel::getTextImage()
+{
+  return _textImage;
+}
+
 vgui::TextPanel::TextPanel(const char* text, int x, int y, int wide, int tall)
   : vgui::Panel{ x,y,wide,tall }
 {

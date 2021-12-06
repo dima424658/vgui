@@ -119,12 +119,11 @@ void vgui::Image::drawSetTexture(int id)
 void vgui::Image::drawTexturedRect(int x0, int y0, int x1, int y1)
 {
   _panel->drawTexturedRect(x0, y0, x1, y1);
-  /*
-  _panel->drawTexturedRect(
-    x0 + _pos[0],
-    y0 + _pos[1],
-    _pos[0] + x1,
-    _pos[1] + y1); ?? */
+}
+
+void vgui::Image::paint(Panel* panel)
+{
+
 }
 
 void vgui::Image::doPaint(vgui::Panel* panel)
@@ -146,6 +145,5 @@ void vgui::Image::getColor(vgui::Color& color)
 
 vgui::Image::Image() : _pos{ 0, 0 }, _size{ 0, 0 }, _panel{ nullptr }, _color{ 255, 255, 255, 0 }
 {
-  
-}
 
+}

@@ -232,6 +232,7 @@ void vgui::TextEntry::doSelectNone()
   repaint();
 }
 
+
 bool vgui::TextEntry::getSelectedRange(int& cx0, int& cx1)
 {
   bool result = false;
@@ -276,6 +277,11 @@ void vgui::TextEntry::doPasteSelected()
 {
   doDeleteSelected();
   doPaste();
+}
+
+void  vgui::TextEntry::doDeleteSelected()
+{
+
 }
 
 void vgui::TextEntry::getText(int offset, char* buf, int bufLen)
@@ -395,3 +401,42 @@ vgui::TextEntry::TextEntry(const char* text, int x, int y, int wide, int tall)
   vgui::Panel::addFocusChangeSignal(new FooDefaultTextEntrySignal{ this });
 }
 
+void vgui::TextEntry::cursorMoved(int x, int y, Panel* panel)
+{
+
+}
+
+void vgui::TextEntry::mouseWheeled(int delta, vgui::Panel* panel)
+{
+
+}
+
+void vgui::TextEntry::mouseReleased(vgui::MouseCode code, vgui::Panel* panel)
+{
+
+}
+
+void vgui::TextEntry::mouseDoublePressed(vgui::MouseCode code, vgui::Panel* panel)
+{
+
+}
+
+void vgui::TextEntry::cursorEntered(vgui::Panel* panel)
+{
+
+}
+
+void vgui::TextEntry::keyPressed(vgui::KeyCode code, vgui::Panel* panel)
+{
+
+}
+
+void vgui::TextEntry::keyReleased(vgui::KeyCode code, vgui::Panel* panel)
+{
+
+}
+
+void vgui::TextEntry::cursorExited(vgui::Panel* panel)
+{
+
+}

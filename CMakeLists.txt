@@ -12,6 +12,7 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 endif ()
 
 add_library(${PROJECT_NAME} SHARED
+    ${CMAKE_SOURCE_DIR}/sources/vgui.cpp
     ${CMAKE_SOURCE_DIR}/sources/App.cpp
     ${CMAKE_SOURCE_DIR}/sources/Bitmap.cpp
     ${CMAKE_SOURCE_DIR}/sources/BitmapTGA.cpp
@@ -42,6 +43,9 @@ add_library(${PROJECT_NAME} SHARED
     ${CMAKE_SOURCE_DIR}/sources/ImagePanel.cpp
     ${CMAKE_SOURCE_DIR}/sources/IntLabel.cpp
     ${CMAKE_SOURCE_DIR}/sources/Label.cpp
+    ${CMAKE_SOURCE_DIR}/sources/Layout.cpp
+    ${CMAKE_SOURCE_DIR}/sources/LineBorder.cpp
+    ${CMAKE_SOURCE_DIR}/sources/LoweredBorder.cpp
     ${CMAKE_SOURCE_DIR}/sources/Menu.cpp
     ${CMAKE_SOURCE_DIR}/sources/MenuItem.cpp
     ${CMAKE_SOURCE_DIR}/sources/Panel.cpp
@@ -50,6 +54,7 @@ add_library(${PROJECT_NAME} SHARED
     ${CMAKE_SOURCE_DIR}/sources/RadioButton.cpp
     ${CMAKE_SOURCE_DIR}/sources/RaisedBorder.cpp
     ${CMAKE_SOURCE_DIR}/sources/Scheme.cpp
+    ${CMAKE_SOURCE_DIR}/sources/ScrollBar.cpp
     ${CMAKE_SOURCE_DIR}/sources/ScrollPanel.cpp
     ${CMAKE_SOURCE_DIR}/sources/Slider.cpp
     ${CMAKE_SOURCE_DIR}/sources/StackLayout.cpp
@@ -61,11 +66,13 @@ add_library(${PROJECT_NAME} SHARED
     ${CMAKE_SOURCE_DIR}/sources/TaskBar.cpp
     ${CMAKE_SOURCE_DIR}/sources/TextEntry.cpp
     ${CMAKE_SOURCE_DIR}/sources/TextGrid.cpp
-    #${CMAKE_SOURCE_DIR}/sources/TextImage.cpp
+    ${CMAKE_SOURCE_DIR}/sources/TextImage.cpp
     ${CMAKE_SOURCE_DIR}/sources/TextPanel.cpp
     ${CMAKE_SOURCE_DIR}/sources/ToggleButton.cpp
     ${CMAKE_SOURCE_DIR}/sources/TreeFolder.cpp
-    ${CMAKE_SOURCE_DIR}/sources/WizardPanel.cpp)
+    ${CMAKE_SOURCE_DIR}/sources/WizardPanel.cpp
+    ${CMAKE_SOURCE_DIR}/sources/handlers/BaseFontPlat.cpp
+    ${CMAKE_SOURCE_DIR}/sources/handlers/FontPlat.cpp)
     
 target_include_directories(${PROJECT_NAME}
     PUBLIC ${CMAKE_SOURCE_DIR}/include)
